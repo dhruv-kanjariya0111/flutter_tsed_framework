@@ -1,6 +1,6 @@
 {
   "name": "@boscdev/flutter-tsed-framework",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "",
   "main": "src/init.js",
   "bin": {
@@ -25,7 +25,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.1"
   },
   "keywords": [],
   "author": "",

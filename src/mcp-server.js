@@ -1,24 +1,45 @@
 const fs = require("fs");
 const path = require("path");
+const { z } = require("zod");
 const { McpServer } = require("@modelcontextprotocol/sdk/server/mcp.js");
 const { StdioServerTransport } = require("@modelcontextprotocol/sdk/server/stdio.js");
 
-const COMMANDS_DIR = path.join(__dirname, "../.cursor/commands");
+function resolveCommandsDir() {
+  const envDir = process.env.FLUTTER_TSED_COMMANDS_DIR;
+  const candidates = [
+    envDir,
+    path.join(process.cwd(), ".cursor/commands"),
+    path.join(__dirname, "../.cursor/commands"),
+  ].filter(Boolean);
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  return candidates[0];
+}
+
+function getCommandsDir() {
+  return resolveCommandsDir();
+}
 
 function listCommandNames() {
-  if (!fs.existsSync(COMMANDS_DIR)) {
+  const commandsDir = getCommandsDir();
+  if (!commandsDir || !fs.existsSync(commandsDir)) {
     return [];
   }
 
   return fs
-    .readdirSync(COMMANDS_DIR)
+    .readdirSync(commandsDir)
     .filter((name) => name.endsWith(".md"))
     .map((name) => name.replace(/\.md$/, ""))
     .sort();
 }
 
 function makeCommandDocPath(commandName) {
-  return path.join(COMMANDS_DIR, `${commandName}.md`);
+  return path.join(getCommandsDir(), `${commandName}.md`);
 }
 
 function readCommandDoc(commandName) {
@@ -32,9 +53,7 @@ function readCommandDoc(commandName) {
 function registerCommandTool(server, commandName) {
   server.tool(
     commandName,
-    {
-      feature: { type: "string", optional: true },
-    },
+    { feature: z.string().optional() },
     async ({ feature } = {}) => {
       const docs = readCommandDoc(commandName);
       const featureSuffix = feature ? `\n\nRequested feature: ${feature}` : "";
@@ -58,7 +77,12 @@ async function startMcpServer() {
 
   const commandNames = listCommandNames();
   if (commandNames.length === 0) {
-    throw new Error("No command docs found in .cursor/commands.");
+    throw new Error(
+      `No command docs found. Checked FLUTTER_TSED_COMMANDS_DIR, ${path.join(
+        process.cwd(),
+        ".cursor/commands"
+      )}, and package .cursor/commands.`
+    );
   }
 
   for (const commandName of commandNames) {
