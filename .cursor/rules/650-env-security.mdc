@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+description: Environment and security rules
+---
+
+# Environment & Security
+
+## Environment Files
+- .env.dev / .env.staging / .env.prod — ALL gitignored.
+- flutter_dotenv reads per-flavor file at startup.
+- Never String.fromEnvironment() outside core/config/app_config.dart.
+- CI/CD: inject secrets via Codemagic environment groups — never committed.
+
+## Secrets Storage
+- API keys, tokens, passwords: FlutterSecureStorage ONLY.
+- Never SharedPreferences for anything sensitive.
+- Certificate pinning in production via SslPinningInterceptor.
+
+## ProGuard (Android release)
+- Keep rules for: Dio, Freezed, json_serializable, Firebase, Supabase, RevenueCat.
+- Test release APK before every store submission.
+- flutter build apk --release --obfuscate --split-debug-info=build/debug-info
+
+## iOS Security
+- NSAppTransportSecurity: no arbitrary loads in production builds.
+- App Transport Security exception requires justification in PR.
+- PrivacyInfo.xcprivacy required for iOS 17+ API usage.
+
+## secret-guard.sh Hook
+- Blocks .env*, .pem, *.key, google-services.json, GoogleService-Info.plist from AI context.
+- Fails closed (blocks entire read if secret detected).

@@ -1,0 +1,17 @@
+{
+  "@@locale": "hi",
+
+  "common_loading": "लोड हो रहा है...",
+  "common_retry": "पुनः प्रयास",
+  "common_cancel": "रद्द करें",
+  "common_save": "सहेजें",
+  "common_error_generic": "कुछ गड़बड़ हो गई। कृपया पुनः प्रयास करें।",
+  "common_error_network": "नेटवर्क त्रुटि। अपना कनेक्शन जांचें।",
+
+  "auth_login_title": "साइन इन",
+  "auth_login_email_hint": "ईमेल पता",
+  "auth_login_password_hint": "पासवर्ड",
+  "auth_login_submit_button": "साइन इन करें",
+  "auth_login_forgot_password": "पासवर्ड भूल गए?",
+  "auth_login_no_account": "खाता नहीं है? साइन अप करें"
+}

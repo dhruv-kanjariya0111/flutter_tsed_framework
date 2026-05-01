@@ -1,0 +1,36 @@
+---
+globs: "test/**,integration_test/**"
+description: Testing rules and conventions
+---
+
+# Testing
+
+## File Mirroring
+lib/src/features/auth/data/repositories/auth_repository_impl.dart
+→ test/unit/features/auth/data/repositories/auth_repository_impl_test.dart
+
+## Unit Tests
+- mocktail for all mocks. Never real HTTP, real DB, or real auth in unit tests.
+- Every entity, mapper, value object, repository impl must have tests.
+- State containers: ProviderContainer with overrides (Riverpod) or fake bindings (GetX).
+- Every error path tested: NetworkFailure, AuthFailure, NotFoundFailure minimum.
+
+## Widget Tests
+- Pump real widget tree (not just widget in isolation where possible).
+- Verify Semantics.identifier targets for interactive elements.
+- Test empty state, error state, loading state for all data-fetching views.
+- Test PATTERN-002 (double-tap prevention) for every submit button.
+
+## Contract Tests (test/contract/)
+- Deserialize REAL API response JSON fixtures → Flutter Freezed models.
+- Fail loudly if field names, types, or nullability differ.
+- Run on every PR against staging environment fixture snapshots.
+
+## Coverage Gate
+- ≥85% line coverage on ALL new files.
+- CI fails hard if new file drops below threshold.
+- Exclude: *.g.dart, *.freezed.dart, main_*.dart.
+
+## BUG_PATTERNS → TEST_SPEC Integration
+- Run /analyze-bugs after every BUG_PATTERNS.md update.
+- Every PATTERN must have at least one corresponding SPEC test.

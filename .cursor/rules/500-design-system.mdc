@@ -1,0 +1,34 @@
+---
+globs: "*_view.dart,*_screen.dart,widgets/**"
+description: Design system and UI rules
+---
+
+# Design System
+
+## Token Access (REQUIRED)
+context.colors.primary       — AppColors extension
+context.spacing.s16          — AppSpacing extension  
+context.textStyles.bodyLarge — AppTypography extension
+context.radius.md            — AppRadius extension
+
+Never: Color(0xFF...), 16.0 (raw), TextStyle(fontSize: ...) inline.
+
+## State Widgets (ALL required for data-fetching views)
+- Loading: skeleton shimmer (ShimmerWidget) NOT spinner for content areas.
+         Inline CircularProgressIndicator ONLY for action buttons.
+- Empty:   EmptyStateWidget(title, subtitle, ctaLabel, onCta) — always actionable.
+- Error:   ErrorStateWidget(message, onRetry) — always with retry button.
+- Use AsyncValue.when(data:, loading:, error:) consistently.
+
+## Component Rules
+- Buttons: disabled when isLoading. Prevent double-tap (PATTERN-002).
+- Text fields: resizeToAvoidBottomInset: true on Scaffold. SingleChildScrollView wrapper.
+- Images: CachedNetworkImage(placeholder: shimmer, errorWidget: ImageErrorPlaceholder).
+- Animations: AnimatedContainer, Hero, TweenAnimationBuilder. Never raw Timer.
+- Dark mode: every color token must have both light and dark values.
+- Tablet: LayoutBuilder + breakpoints. Never hard-coded widths.
+
+## Accessibility (WCAG AA — see also 565-a11y.mdc)
+- Minimum tap target: 48x48 logical pixels.
+- Text contrast ratio >= 4.5:1 (normal), >= 3:1 (large text).
+- All images: semanticsLabel or excludeSemantics.

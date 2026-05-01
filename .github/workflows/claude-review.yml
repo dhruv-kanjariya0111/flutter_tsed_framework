@@ -1,0 +1,26 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  claude-review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run Claude Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          review_type: full
+          custom_instructions: |
+            Review against the framework rules in .cursor/rules/.
+            Focus on: architecture layers, missing Semantics, hardcoded values,
+            missing error states, performance anti-patterns, security issues.
+            Reference MEMORY.md lessons when flagging repeated issues.

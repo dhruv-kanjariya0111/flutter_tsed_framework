@@ -1,0 +1,154 @@
+workflows:
+  # ── PR Quality Gate ──────────────────────────────────────
+  pr-check:
+    name: PR Quality Gate
+    max_build_duration: 30
+    triggering:
+      events: [pull_request]
+    environment:
+      flutter: stable
+    scripts:
+      - name: Flutter install
+        script: cd frontend && flutter pub get
+      - name: Build runner
+        script: cd frontend && dart run build_runner build --delete-conflicting-outputs
+      - name: Flutter analyze
+        script: cd frontend && flutter analyze --fatal-infos
+      - name: Flutter test + coverage
+        script: cd frontend && flutter test --coverage
+      - name: Coverage gate (>=85%)
+        script: |
+          LINES=$(lcov --summary frontend/coverage/lcov.info 2>&1 | grep "lines" | grep -oP '\d+\.\d+(?=%)')
+          echo "Coverage: $LINES%"
+          if (( $(echo "$LINES < 85" | bc -l) )); then
+            echo "FAIL: Coverage $LINES% below 85% threshold"; exit 1
+          fi
+      - name: APK size check
+        script: |
+          cd frontend
+          flutter build appbundle --target-platform android-arm64
+          SIZE=$(cat build/app/outputs/bundle/release/app-release.aab | wc -c)
+          echo "AAB size: $((SIZE / 1024 / 1024))MB"
+          if [ $SIZE -gt 26214400 ]; then
+            echo "FAIL: AAB exceeds 25MB limit"; exit 1
+          fi
+      - name: Backend lint
+        script: cd backend && npm ci && npm run lint
+      - name: Backend tests
+        script: cd backend && npm run test
+      - name: OpenAPI validate
+        script: cd backend && npm run openapi:validate
+
+  # ── Android Staging ──────────────────────────────────────
+  android-staging:
+    name: Android Staging (AAB → Play Internal)
+    max_build_duration: 60
+    triggering:
+      events: [push]
+      branch_patterns: [{ pattern: develop }]
+    environment:
+      flutter: stable
+      android_signing:
+        - android_keystore
+      vars:
+        PACKAGE_NAME: "com.agency.clientapp"
+    scripts:
+      - name: Install deps
+        script: cd frontend && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+      - name: Analyze
+        script: cd frontend && flutter analyze --fatal-infos
+      - name: Test
+        script: cd frontend && flutter test --coverage
+      - name: Build AAB
+        script: |
+          cd frontend
+          flutter build appbundle --release \
+            --obfuscate \
+            --split-debug-info=build/debug-info \
+            --flavor staging \
+            -t lib/main_staging.dart
+    artifacts:
+      - frontend/build/**/outputs/**/*.aab
+      - frontend/build/debug-info/**
+    publishing:
+      google_play:
+        credentials: $GPLAY_SERVICE_ACCOUNT
+        track: internal
+
+  # ── iOS Staging ──────────────────────────────────────────
+  ios-staging:
+    name: iOS Staging (IPA → TestFlight)
+    max_build_duration: 60
+    triggering:
+      events: [push]
+      branch_patterns: [{ pattern: develop }]
+    environment:
+      flutter: stable
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.agency.clientapp
+    scripts:
+      - name: Install deps
+        script: cd frontend && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+      - name: Analyze
+        script: cd frontend && flutter analyze --fatal-infos
+      - name: Test
+        script: cd frontend && flutter test --coverage
+      - name: Build IPA
+        script: |
+          cd frontend
+          flutter build ipa --release \
+            --obfuscate \
+            --split-debug-info=build/debug-info \
+            --flavor staging \
+            -t lib/main_staging.dart
+    artifacts:
+      - frontend/build/ios/ipa/*.ipa
+      - frontend/build/debug-info/**
+    publishing:
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_KEY
+        submit_to_testflight: true
+
+  # ── Production Release ───────────────────────────────────
+  production:
+    name: Production Release (App Store + Play Store)
+    max_build_duration: 90
+    triggering:
+      events: [push]
+      branch_patterns: [{ pattern: main }]
+    environment:
+      flutter: stable
+      xcode: latest
+    scripts:
+      - name: Install deps
+        script: cd frontend && flutter pub get && dart run build_runner build --delete-conflicting-outputs
+      - name: Full quality gate
+        script: |
+          cd frontend
+          flutter analyze --fatal-infos
+          flutter test --coverage
+      - name: Build Android Production
+        script: |
+          cd frontend
+          flutter build appbundle --release --obfuscate \
+            --split-debug-info=build/debug-info \
+            --flavor prod -t lib/main_prod.dart
+      - name: Build iOS Production
+        script: |
+          cd frontend
+          flutter build ipa --release --obfuscate \
+            --split-debug-info=build/debug-info \
+            --flavor prod -t lib/main_prod.dart
+    artifacts:
+      - frontend/build/**/outputs/**/*.aab
+      - frontend/build/ios/ipa/*.ipa
+      - frontend/build/debug-info/**
+    publishing:
+      google_play:
+        credentials: $GPLAY_SERVICE_ACCOUNT
+        track: production
+      app_store_connect:
+        api_key: $APP_STORE_CONNECT_KEY
+        submit_to_app_store: true

@@ -1,0 +1,27 @@
+# Ignore build outputs
+frontend/build/
+frontend/.dart_tool/
+frontend/.flutter-plugins
+frontend/.flutter-plugins-dependencies
+backend/dist/
+backend/node_modules/
+
+# Ignore generated files (let build_runner handle)
+**/*.g.dart
+**/*.freezed.dart
+
+# Ignore secrets
+.env
+.env.dev
+.env.staging
+.env.prod
+*.pem
+*.key
+*.jks
+*.p12
+*.mobileprovision
+google-services.json
+GoogleService-Info.plist
+
+# Ignore coverage reports
+frontend/coverage/

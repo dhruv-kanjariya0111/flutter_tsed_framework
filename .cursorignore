@@ -1,0 +1,10 @@
+# Same as .claudeignore
+frontend/build/
+frontend/.dart_tool/
+backend/dist/
+backend/node_modules/
+.env*
+*.pem
+*.key
+google-services.json
+GoogleService-Info.plist

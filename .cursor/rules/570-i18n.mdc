@@ -1,0 +1,27 @@
+---
+globs: frontend/lib/**
+description: Internationalisation rules
+---
+
+# Internationalisation (i18n)
+
+## Setup
+- flutter_localizations + intl package.
+- ARB files in frontend/l10n/:  app_en.arb (source), app_hi.arb, etc.
+- flutter gen-l10n generates AppLocalizations in .dart_tool/flutter_gen/gen_l10n/.
+- Access: context.l10n.featureName_key or AppLocalizations.of(context)!.key.
+
+## ARB Key Conventions
+Feature prefix: auth_login_title, auth_login_emailHint, auth_login_submitButton
+Shared: common_retry, common_cancel, common_loading, common_error_generic
+
+## Rules
+- ZERO hardcoded user-visible strings in Dart files. Only ARB references.
+- Pluralization: use ICU message format in ARB: {count, plural, one{item} other{items}}
+- RTL support: Directionality widget at app root. TextDirection from locale.
+- Date/time: always format via intl.DateFormat(pattern, locale). Never toString().
+- Currency: intl.NumberFormat.currency(locale, symbol). Never manual formatting.
+
+## Missing Translations
+- If translation key missing → show key name in debug, fallback to English in release.
+- CI: fail build if ARB files have mismatched keys between locales.

@@ -1,0 +1,40 @@
+{
+  "@@locale": "en",
+  "@@last_modified": "2024-01-01",
+
+  "common_loading": "Loading...",
+  "@common_loading": { "description": "Generic loading message" },
+
+  "common_retry": "Retry",
+  "@common_retry": { "description": "Retry button label" },
+
+  "common_cancel": "Cancel",
+  "@common_cancel": { "description": "Cancel button label" },
+
+  "common_save": "Save",
+  "@common_save": { "description": "Save button label" },
+
+  "common_error_generic": "Something went wrong. Please try again.",
+  "@common_error_generic": { "description": "Generic error message" },
+
+  "common_error_network": "Network error. Check your connection.",
+  "@common_error_network": { "description": "Network error message" },
+
+  "auth_login_title": "Sign In",
+  "@auth_login_title": { "description": "Login screen title" },
+
+  "auth_login_email_hint": "Email address",
+  "@auth_login_email_hint": { "description": "Email input hint" },
+
+  "auth_login_password_hint": "Password",
+  "@auth_login_password_hint": { "description": "Password input hint" },
+
+  "auth_login_submit_button": "Sign In",
+  "@auth_login_submit_button": { "description": "Login submit button" },
+
+  "auth_login_forgot_password": "Forgot password?",
+  "@auth_login_forgot_password": { "description": "Forgot password link" },
+
+  "auth_login_no_account": "Don't have an account? Sign up",
+  "@auth_login_no_account": { "description": "Sign up navigation link" }
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      { "command": ".cursor/hooks/command-safety.sh", "failClosed": true }
+    ],
+    "beforeReadFile": [
+      { "command": ".cursor/hooks/secret-guard.sh", "failClosed": true }
+    ],
+    "afterFileEdit": [
+      { "command": ".cursor/hooks/dart-format.sh" },
+      { "command": ".cursor/hooks/backend-format.sh" },
+      { "command": ".cursor/hooks/tdd-enforce.sh" },
+      { "command": ".cursor/hooks/log-changes.sh" },
+      { "command": ".cursor/hooks/store-asset-check.sh" },
+      { "command": ".cursor/hooks/a11y-lint.sh" },
+      { "command": ".cursor/hooks/perf-budget.sh" }
+    ],
+    "stop": [
+      { "command": ".cursor/hooks/notify.sh" }
+    ]
+  }
+}

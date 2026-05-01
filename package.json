@@ -1,0 +1,33 @@
+{
+  "name": "flutter_tsed_framework",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/init.js",
+  "bin": {
+    "flutter-tsed": "bin/flutter-tsed.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    ".cursor/agents",
+    ".cursor/commands",
+    ".cursor/hooks",
+    ".cursor/rules",
+    ".claude/skills",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "PROJECT_CONFIG.md",
+    "MEMORY.md",
+    "BUG_PATTERNS.md",
+    "TEST_SPEC.md"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Flutter TSed icon">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="24" fill="url(#bg)"/>
+  <path d="M38 30h26l-18 18h-8z" fill="#ffffff" opacity="0.95"/>
+  <path d="M64 30h26L52 68H26z" fill="#ffffff" opacity="0.9"/>
+  <path d="M50 72h24l16 16H66z" fill="#e6f6ff"/>
+  <path d="M26 72h24l16 16H42z" fill="#d1f0ff"/>
+</svg>

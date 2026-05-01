@@ -1,0 +1,48 @@
+pre-commit:
+  parallel: true
+  commands:
+    dart-format:
+      glob: "frontend/**/*.dart"
+      exclude: "*.g.dart|*.freezed.dart"
+      run: cd frontend && dart format --set-exit-if-changed {staged_files}
+
+    dart-analyze:
+      glob: "frontend/**/*.dart"
+      exclude: "*.g.dart|*.freezed.dart"
+      run: cd frontend && flutter analyze --fatal-infos {staged_files}
+
+    backend-lint:
+      glob: "backend/**/*.ts"
+      exclude: "*.spec.ts"
+      run: cd backend && npx eslint {staged_files} --max-warnings 0
+
+    secrets-scan:
+      run: |
+        if command -v gitleaks &> /dev/null; then
+          gitleaks detect --source . --no-banner --exit-code 1
+        else
+          echo "WARNING: gitleaks not installed. Install: brew install gitleaks"
+        fi
+      skip: [merge, rebase]
+
+commit-msg:
+  commands:
+    conventional-commits:
+      run: |
+        echo "$(cat {1})" | grep -qP "^(feat|fix|docs|style|refactor|test|chore|perf|build|ci)(\(.+\))?(!)?: .{3,}" ||
+        (echo "ERROR: Commit message must follow Conventional Commits format.
+Examples:
+  feat(auth): add OAuth2 login
+  fix(network): retry on 503 response
+  chore: update dependencies
+See: https://www.conventionalcommits.org/" && exit 1)
+
+pre-push:
+  commands:
+    flutter-tests:
+      glob: "frontend/**/*.dart"
+      run: cd frontend && flutter test --coverage
+
+    backend-tests:
+      glob: "backend/**/*.ts"
+      run: cd backend && npm run test
