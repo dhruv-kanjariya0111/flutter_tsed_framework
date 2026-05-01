@@ -1,6 +1,6 @@
 {
-  "name": "flutter_tsed_framework",
-  "version": "1.0.0",
+  "name": "@boscdev/flutter-tsed-framework",
+  "version": "1.0.1",
   "description": "",
   "main": "src/init.js",
   "bin": {

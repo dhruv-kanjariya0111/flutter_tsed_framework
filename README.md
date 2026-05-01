@@ -22,7 +22,7 @@ Add this block in `.cursor/mcp.json`:
   "mcpServers": {
     "flutter-tsed": {
       "command": "npx",
-      "args": ["@your-org/flutter-tsed-framework@latest", "--mcp"]
+      "args": ["@boscdev/flutter-tsed-framework@latest", "--mcp"]
     }
   }
 }
@@ -36,7 +36,7 @@ Add this to `.vscode/extensions.json`:
 
 ```json
 {
-  "recommendations": ["your-org.flutter-tsed-framework"]
+  "recommendations": ["boscdev.flutter-tsed-framework"]
 }
 ```
 
@@ -49,7 +49,7 @@ Add in `package.json`:
 ```json
 {
   "devDependencies": {
-    "@your-org/flutter-tsed-framework": "latest"
+    "@boscdev/flutter-tsed-framework": "latest"
   }
 }
 ```
@@ -148,5 +148,5 @@ When MCP is enabled, the framework can be invoked from your AI workflow as a too
 
 ## Notes
 
-- Replace `@your-org/flutter-tsed-framework` and `your-org.flutter-tsed-framework` with your published package and extension IDs.
+- Use `@boscdev/flutter-tsed-framework` and `boscdev.flutter-tsed-framework` for published package and extension IDs.
 - Prefer committing shared setup files (`.vscode/extensions.json`, project docs) so teams get a consistent workflow.
