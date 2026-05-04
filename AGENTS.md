@@ -65,7 +65,7 @@
 ## Command Reference (all commands)
 | Command | Purpose |
 |---|---|
-| `/init` | Project setup wizard (new / existing / migrating / mid-project) |
+| `/init` | Project setup wizard — accepts PRD to auto-fill config and generate feature backlog (new / existing / migrating / mid-project) |
 | `/plan <feature>` | Wave-ordered feature plan with web research |
 | `/api-design <feature>` | OpenAPI contract design (tsed/node only) |
 | `/tdd <feature>` | Full Flutter TDD cycle |
