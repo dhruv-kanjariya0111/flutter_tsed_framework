@@ -19,24 +19,34 @@ A production-grade Flutter development framework with guided AI-powered workflow
 
 ## Installation
 
-**Option A: MCP (Cursor / Claude Code) — recommended**
-```json
-// .cursor/mcp.json
-{
-  "mcpServers": {
-    "flutter-tsed": {
-      "command": "npx",
-      "args": ["-y", "@boscdev/flutter-tsed-framework@latest", "--mcp"]
-    }
-  }
-}
-```
-Restart Cursor after adding.
+Install the package globally:
 
-**Option B: npm (repo-local)**
 ```bash
-npm install --save-dev @boscdev/flutter-tsed-framework
+npm install -g @boscdev/flutter-tsed-framework
 ```
+
+Then run the setup command for your IDE:
+
+**Claude Code:**
+```bash
+flutter-tsed setup-claude
+# Prompts: global (~/.claude) or local (this project)?
+# --global and --local flags skip the prompt
+# --force overwrites existing user-facing files
+```
+
+**Cursor:**
+```bash
+flutter-tsed setup-cursor
+# Prompts: global (~/.cursor) or local (this project)?
+```
+
+Both commands are idempotent — re-running updates the framework internals without touching files you've edited (like `PROJECT_CONFIG.md` or `MEMORY.md`). To update those too, pass `--force`.
+
+**What gets installed:**
+- Framework agents and commands → `~/.claude/flutter-tsed/` (hidden, managed by the framework)
+- User-facing config files → your project root (edit these freely)
+- `settings.json` → updated with the framework paths (existing keys preserved)
 
 ---
 
@@ -381,10 +391,10 @@ The AI will:
 
 ## Troubleshooting
 
-**MCP server not available:**
-- Validate `.cursor/mcp.json` JSON syntax
-- Ensure `npx` is available: `which npx`
-- Restart Cursor after config changes
+**Setup command not available:**
+- Verify `npm` is available: `which npm`
+- Ensure global install succeeded: `flutter-tsed --version`
+- Re-run the setup command: `flutter-tsed setup-claude` or `flutter-tsed setup-cursor`
 
 **Command fails with configuration error:**
 - The AI will show a `⚠️ CONFIGURATION REQUIRED` block with exact steps
