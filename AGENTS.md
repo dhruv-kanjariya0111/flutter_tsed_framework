@@ -72,6 +72,9 @@
 | `/tdd-backend <feature>` | Full backend TDD cycle (branched by backendFramework) |
 | `/fix <description>` | Research + fix a bug with failing test first |
 | `/integrate <service>` | Add a 3rd-party service with manual step guidance |
+| `/jira fetch <id>` | Fetch and display a Jira ticket with description and acceptance criteria |
+| `/jira start <id>` | Fetch ticket → create git branch → mark In Progress in Jira |
+| `/jira done <id>` | Mark ticket Done in Jira → prompt to open PR |
 | `/migrate <target>` | Platform migration (absorbs analyze-source as Phase 0) |
 | `/analyze-source <path>` | Migration source analysis alias |
 | `/refactor <module>` | Behavior-neutral cleanup |
