@@ -1,6 +1,6 @@
 {
   "name": "@boscdev/flutter-tsed-framework",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "",
   "main": "src/init.js",
   "bin": {
@@ -32,9 +32,9 @@
     "MEMORY.md",
     "BUG_PATTERNS.md",
     "TEST_SPEC.md",
-    "CODEBASE_EXPLAINED.md",
     "PRD_TEMPLATE.md",
     ".claude/hooks",
+    ".cursor/plans",
     "shared"
   ],
   "scripts": {
