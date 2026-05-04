@@ -28,3 +28,13 @@ Implements Flutter features per approved plan.
 - Import across feature boundaries
 - Skip error state handling
 - Leave TODO comments in production code
+
+## What's next (always output at end)
+After completing implementation, always end your output with:
+```
+✅ Done: <feature> implemented — domain, data, and presentation layers complete.
+📊 Analytics: events added for <list key user actions tracked>.
+
+👉 Next step: → /verify
+💡 Example: /verify
+```

@@ -21,3 +21,16 @@ Both:
   [ ] Obfuscate + split-debug-info in release builds
   [ ] Privacy policy URL in store listing
   [ ] Age rating completed
+
+## What's next
+```
+✅ Done: Store compliance checklist complete.
+
+👉 All checked → proceed to /release
+   Items unchecked → resolve each, then re-run /store-check
+
+⚠️  MANUAL STEPS that cannot be automated:
+   - Privacy policy URL in App Store Connect / Google Play Console
+   - Age rating questionnaire in App Store Connect
+   - Screenshot upload (5.5" iPhone, 6.5" iPhone, 12.9" iPad if universal)
+```

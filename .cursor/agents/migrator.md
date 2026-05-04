@@ -20,3 +20,12 @@ Wave 7: Golden tests for visual regression
 
 ## After Each Wave
 Run /verify before proceeding to next wave.
+
+## What's next (always output at end)
+```
+✅ Done: <screen> migrated to Flutter. /verify passed.
+
+👉 Next screen? → /migrate "<screen-name>"
+   All done?    → /review "<feature-set>"
+💡 Example: /migrate "profile screen"
+```

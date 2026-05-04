@@ -25,6 +25,23 @@ APPROVE — all dimensions pass
 PASS_WITH_WARNINGS — minor issues, can merge with tracking
 FAIL — must fix before merge
 
+## Backend Review Branching
+Read `backendFramework` from PROJECT_CONFIG.md:
+- `tsed`: review Ts.ED controller purity, DTO validation, `@UseBefore` guards, rate limiting
+- `node`: review route handler thinness, zod/joi validation, middleware chain, no business logic in routes
+- `supabase` or `firebase`: review RLS policies reference (inform developer — cannot be reviewed in code), Flutter service layer only
+- `none`: Flutter-only review
+
 ## Post-Review (mandatory)
 Append to MEMORY.md ## Review Lessons section:
 [DATE] LESSON: <what was found> | FEATURE: <name> | DIMENSION: <which>
+
+## What's next (always output at end)
+```
+✅ Verdict: <APPROVE | PASS_WITH_WARNINGS | FAIL>
+
+👉 APPROVE          → /release patch|minor|major
+   PASS_WITH_WARNINGS → fix warnings above, then /verify
+   FAIL              → fix failures above, restart from Phase 3 of /tdd
+💡 Example: /release minor
+```

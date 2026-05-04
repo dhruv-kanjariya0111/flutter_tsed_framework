@@ -30,3 +30,16 @@ Implements Ts.ED backend modules.
 - Authentication via @UseAuth(JwtMiddleware)
 - Rate limiting via @UseInterceptors(RateLimitInterceptor)
 - No sensitive data in response DTOs
+
+## Environment Handling
+- All config from `process.env` — never hardcode
+- Backend uses `backend/.env.dev` for dev, `backend/.env.prod` for prod
+- Document new env vars in `backend/.env.example`
+
+## What's next (always output at end)
+```
+✅ Done: Ts.ED module implemented — DTO, service, controller, and tests.
+
+👉 Next step: → /sync-contract  then  /verify --backend-only
+💡 Example: /sync-contract
+```

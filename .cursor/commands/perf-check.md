@@ -15,3 +15,13 @@
 - APK > 25MB
 - First meaningful paint > 2000ms
 - Any ListView with > 5 items not using .builder
+
+## What's next
+```
+✅ Done: Performance budget check complete.
+
+👉 PASS → continue to /store-check or /release
+   FAIL → profile with Flutter DevTools, fix the listed violation, re-run /perf-check
+
+💡 Example: If startup > 2s, check for synchronous work in main() or heavy widget tree on first frame.
+```

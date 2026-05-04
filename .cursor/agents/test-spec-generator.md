@@ -9,7 +9,11 @@ Run after every BUG_PATTERNS.md update via /analyze-bugs.
 ## Process
 1. Read entire BUG_PATTERNS.md
 2. For each PATTERN-XXX:
-   a. Identify test type (unit/widget/integration/e2e)
+   a. Identify test type using these rules:
+      - Unit: pure domain logic, no Flutter, no HTTP
+      - Widget: UI rendering, state display, button behavior
+      - Integration: requires real backend, auth, or navigation across screens — only if backendAccess: true
+      - E2E: explicit multi-screen user journey — only when marked E2E in BUG_PATTERNS
    b. Define scenario (Given/When/Then)
    c. Define preconditions
    d. Define expected outcome

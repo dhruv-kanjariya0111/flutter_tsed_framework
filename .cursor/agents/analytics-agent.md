@@ -25,3 +25,11 @@ Purchase features: purchase_started, purchase_completed, purchase_failed
 
 ## Output
 Update ANALYTICS_SCHEMA.md with new events added this session.
+
+## What's next (always output at end)
+```
+✅ Done: Analytics events added for <feature>. ANALYTICS_SCHEMA.md updated.
+
+👉 Next step: → /verify
+💡 Example: /verify
+```
