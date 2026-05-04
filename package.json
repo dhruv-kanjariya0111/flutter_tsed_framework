@@ -9,11 +9,11 @@
   "files": [
     "bin",
     "src",
-    ".cursor/agents",
-    ".cursor/commands",
-    ".cursor/hooks",
-    ".cursor/rules",
+    ".claude/agents",
+    ".claude/commands",
     ".claude/skills",
+    ".cursor/agents",
+    ".cursor/rules",
     "AGENTS.md",
     "CLAUDE.md",
     "PROJECT_CONFIG.md",
@@ -22,11 +22,7 @@
     "TEST_SPEC.md"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^4.4.1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
