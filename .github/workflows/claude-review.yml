@@ -20,7 +20,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           review_type: full
           custom_instructions: |
-            Review against the framework rules in .cursor/rules/.
-            Focus on: architecture layers, missing Semantics, hardcoded values,
-            missing error states, performance anti-patterns, security issues.
-            Reference MEMORY.md lessons when flagging repeated issues.
+            Review against the framework rules in .claude/rules/.
+            Read MEMORY.md for accumulated review lessons — flag any repeated issues.
+            Read BUG_PATTERNS.md for known failure patterns (PATTERN-001 through end).
+            Focus on: architecture layer violations, missing Semantics, hardcoded colors/spacing,
+            missing error/empty/loading states, performance anti-patterns, security issues.
+            Verdict must be: APPROVE | PASS_WITH_WARNINGS | FAIL.

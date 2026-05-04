@@ -192,15 +192,33 @@ Mark a Jira ticket as "Done" and open a pull request.
      - `401`: Print `⚠️  Jira auth failed. Check JIRA_EMAIL and JIRA_API_TOKEN in backend/.env.dev.` and stop.
      - Other `5xx`: Print `⚠️  Jira API error ({status}). Try again or check your JIRA_URL.` and stop.
 
-3. Print summary:
-   ```
-   ✅  {ticket-id} marked as Done.
+3. Auto-create pull request:
 
-   👉  Next steps:
-       1. Open a PR for your branch.
-       2. Reference the ticket in the PR description: Closes {ticket-id}
+   Run the following commands:
+   ```
+   git push -u origin $(git branch --show-current)
+   gh pr create \
+     --title "$(git log -1 --format='%s') [{ticket-id}]" \
+     --body "## Summary
+
+   Closes {ticket-id}
+
+   ## Test plan
+   - [ ] Run /verify
+   - [ ] Review BUG_PATTERNS.md for this feature area
+   - [ ] All CI gates green"
+   ```
+
+   **If `gh` is not installed or not authenticated:**
+   Print instead:
+   ```
+   ⚠️  GitHub CLI (gh) not available. Create the PR manually:
+       1. Push: git push -u origin $(git branch --show-current)
+       2. Open a PR referencing: Closes {ticket-id}
        3. Run /verify before merging.
    ```
+
+   **On success:** Print the PR URL returned by `gh pr create`.
 
 ---
 

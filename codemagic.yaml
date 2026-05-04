@@ -26,11 +26,17 @@ workflows:
       - name: APK size check
         script: |
           cd frontend
-          flutter build appbundle --target-platform android-arm64
-          SIZE=$(cat build/app/outputs/bundle/release/app-release.aab | wc -c)
-          echo "AAB size: $((SIZE / 1024 / 1024))MB"
-          if [ $SIZE -gt 26214400 ]; then
-            echo "FAIL: AAB exceeds 25MB limit"; exit 1
+          flutter build apk --analyze-size --target-platform android-arm64 \
+            2>&1 | tee /tmp/size-output.txt
+          SIZE_LINE=$(grep -oE 'Download Size.*[0-9]+\.[0-9]+ MB' /tmp/size-output.txt | head -1 || echo "")
+          echo "Size analysis: ${SIZE_LINE:-see output above}"
+          APK_PATH=$(find build/app/outputs/flutter-apk -name "*.apk" | head -1)
+          if [ -n "$APK_PATH" ]; then
+            SIZE=$(wc -c < "$APK_PATH")
+            echo "APK size: $((SIZE / 1024 / 1024))MB"
+            if [ $SIZE -gt 26214400 ]; then
+              echo "FAIL: APK exceeds 25MB limit"; exit 1
+            fi
           fi
       - name: Backend lint
         script: cd backend && npm ci && npm run lint
@@ -141,6 +147,22 @@ workflows:
           flutter build ipa --release --obfuscate \
             --split-debug-info=build/debug-info \
             --flavor prod -t lib/main_prod.dart
+      - name: Backend deployment gate
+        script: |
+          echo "────────────────────────────────────────────────"
+          echo "⚠️  BACKEND DEPLOYMENT GATE"
+          echo "    Mobile apps are built and ready to publish."
+          echo "    Confirm the backend API is deployed to production"
+          echo "    before these builds go live in the stores."
+          echo ""
+          echo "    To bypass this gate (e.g. mobile-only hotfix):"
+          echo "    Set SKIP_BACKEND_GATE=true in Codemagic env vars."
+          echo "────────────────────────────────────────────────"
+          if [ "${SKIP_BACKEND_GATE}" != "true" ]; then
+            echo "BLOCKED: Set SKIP_BACKEND_GATE=true to publish without backend check."
+            exit 1
+          fi
+          echo "✅ Backend gate bypassed via SKIP_BACKEND_GATE=true"
     artifacts:
       - frontend/build/**/outputs/**/*.aab
       - frontend/build/ios/ipa/*.ipa

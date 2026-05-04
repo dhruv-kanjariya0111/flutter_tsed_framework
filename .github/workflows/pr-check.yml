@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: 'stable'
@@ -27,22 +29,44 @@ jobs:
           LINES=$(lcov --summary frontend/coverage/lcov.info 2>&1 | grep "lines" | grep -oP '\d+\.\d+(?=%)')
           echo "Coverage: $LINES%"
           [ $(echo "$LINES >= 85" | bc) -eq 1 ] || (echo "FAIL: Coverage below 85%" && exit 1)
+      - name: Coverage delta (warn on untested changed files)
+        run: |
+          BASE_SHA=${{ github.event.pull_request.base.sha }}
+          git diff --name-only $BASE_SHA HEAD -- 'frontend/lib/**/*.dart' > /tmp/changed_dart.txt 2>/dev/null || \
+            git diff --name-only $BASE_SHA HEAD | grep '^frontend/lib/.*\.dart$' > /tmp/changed_dart.txt || true
+          if [ -s /tmp/changed_dart.txt ]; then
+            echo "Changed Dart files in this PR:"
+            cat /tmp/changed_dart.txt
+            MISSING=0
+            while IFS= read -r f; do
+              rel="${f#frontend/}"
+              if ! grep -q "$rel" frontend/coverage/lcov.info 2>/dev/null; then
+                echo "WARNING: $f has no coverage data — may be untested"
+                MISSING=$((MISSING + 1))
+              fi
+            done < /tmp/changed_dart.txt
+            if [ $MISSING -gt 0 ]; then
+              echo "::warning::$MISSING changed file(s) have no coverage data. Add tests to maintain coverage."
+            fi
+          fi
 
   backend:
     name: Backend Quality Gate
     runs-on: ubuntu-latest
+    env:
+      BACKEND_DIR: ${{ vars.BACKEND_DIR || 'backend' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: ${{ vars.BACKEND_DIR || 'backend' }}/package-lock.json
       - name: Install dependencies
-        run: cd backend && npm ci
+        run: cd $BACKEND_DIR && npm ci
       - name: Lint
-        run: cd backend && npm run lint
+        run: cd $BACKEND_DIR && npm run lint
       - name: Test
-        run: cd backend && npm run test
+        run: cd $BACKEND_DIR && npm run test
       - name: Validate OpenAPI
-        run: cd backend && npm run openapi:validate
+        run: cd $BACKEND_DIR && npm run openapi:validate

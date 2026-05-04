@@ -28,12 +28,14 @@
     "codemagic.yaml",
     "AGENTS.md",
     "CLAUDE.md",
-    "CHANGELOG.md",
-    "CODEBASE_EXPLAINED.md",
     "PROJECT_CONFIG.md",
     "MEMORY.md",
     "BUG_PATTERNS.md",
-    "TEST_SPEC.md"
+    "TEST_SPEC.md",
+    "CODEBASE_EXPLAINED.md",
+    "PRD_TEMPLATE.md",
+    ".claude/hooks",
+    "shared"
   ],
   "scripts": {
     "test": "jest"

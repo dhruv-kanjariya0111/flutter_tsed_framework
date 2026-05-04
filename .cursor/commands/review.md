@@ -20,7 +20,11 @@ PASS_WITH_WARNINGS — merge with tracked issues
 FAIL — block merge, list required fixes
 
 ## Post-Review
-reviewer agent appends lesson to MEMORY.md
+1. reviewer agent appends lesson to MEMORY.md
+2. test-spec-generator agent runs automatically:
+   - Re-reads BUG_PATTERNS.md
+   - Overwrites TEST_SPEC.md with updated Given/When/Then specs, test-type tags, and suggested file paths
+   - No manual `/analyze-bugs` call needed — this happens after every review
 
 ## What's next
 ```

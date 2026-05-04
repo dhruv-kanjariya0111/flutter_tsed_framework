@@ -57,7 +57,7 @@ async function setupClaude() {
 
   const settingsPath = path.join(targetBase, "settings.json");
 
-  const internalDirs = [".claude/agents", ".claude/commands", ".claude/skills"];
+  const internalDirs = [".claude/agents", ".claude/commands", ".claude/rules", ".claude/skills", ".claude/hooks"];
   let internalResults;
   try {
     internalResults = copyInternalFiles({ pkgRoot: PKG_ROOT, targetBase, internalDirs });
@@ -81,11 +81,11 @@ async function setupClaude() {
   const userFacingFiles = [
     ".claudeignore", "codemagic.yaml", "lefthook.yml",
     "CLAUDE.md", "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md",
-    "CHANGELOG.md", "CODEBASE_EXPLAINED.md",
+    "CHANGELOG.md", "CODEBASE_EXPLAINED.md", "PRD_TEMPLATE.md",
   ];
   const userResults = [
     ...copyUserFacingFiles({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingFiles, force }),
-    ...copyUserFacingDirs({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingDirs: ["frontend", "backend", "scripts", ".github"], force }),
+    ...copyUserFacingDirs({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingDirs: ["frontend", "backend", "scripts", ".github", "shared"], force }),
   ];
 
   const settingsKeys = isGlobal

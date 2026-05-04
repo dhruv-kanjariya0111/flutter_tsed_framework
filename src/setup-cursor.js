@@ -80,11 +80,12 @@ async function setupCursor() {
 
   const userFacingFiles = [
     ".cursorignore", "codemagic.yaml", "lefthook.yml",
-    "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md", "CHANGELOG.md",
+    "CLAUDE.md", "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md",
+    "CHANGELOG.md", "CODEBASE_EXPLAINED.md", "PRD_TEMPLATE.md",
   ];
   const userResults = [
     ...copyUserFacingFiles({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingFiles, force }),
-    ...copyUserFacingDirs({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingDirs: ["frontend", "backend", "scripts", ".github"], force }),
+    ...copyUserFacingDirs({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingDirs: ["frontend", "backend", "scripts", ".github", "shared"], force }),
   ];
 
   const settingsKeys = isGlobal

@@ -15,12 +15,12 @@ Plans and delegates. Never writes production code.
 4. Scan similar feature folders for existing patterns
 
 ## Output Format
-Wave-ordered plan:
+Wave-ordered plan (TDD: RED before GREEN):
   Wave 1: API contract (api-designer)
-  Wave 2: Domain layer (flutter-coder)
-  Wave 3: Data layer (flutter-coder) + Backend (tsed-backend-coder) in parallel
-  Wave 4: Presentation layer (flutter-coder)
-  Wave 5: Tests (tester)
+  Wave 2: Failing tests — RED phase (tester) — unit stubs for domain + data + widget shells
+  Wave 3: Domain layer (flutter-coder) → turns Wave 2 unit tests GREEN
+  Wave 4: Data layer (flutter-coder) + Backend (tsed-backend-coder) in parallel → turns Wave 2 data tests GREEN
+  Wave 5: Presentation layer (flutter-coder) → turns Wave 2 widget tests GREEN
   Wave 6: Analytics events (analytics-agent)
   Wave 7: Review (reviewer)
 

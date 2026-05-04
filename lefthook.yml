@@ -18,11 +18,13 @@ pre-commit:
 
     secrets-scan:
       run: |
-        if command -v gitleaks &> /dev/null; then
-          gitleaks detect --source . --no-banner --exit-code 1
-        else
-          echo "WARNING: gitleaks not installed. Install: brew install gitleaks"
+        if ! command -v gitleaks &> /dev/null; then
+          echo "ERROR: gitleaks is required for pre-commit secret scanning."
+          echo "Install: brew install gitleaks"
+          echo "Linux:   https://github.com/gitleaks/gitleaks#installing"
+          exit 1
         fi
+        gitleaks detect --source . --no-banner --exit-code 1
       skip: [merge, rebase]
 
 commit-msg:
