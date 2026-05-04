@@ -42,8 +42,9 @@ Read `backendFramework` and `backendAccess` from PROJECT_CONFIG.md:
 11. `/store-check` — only on --pre-release
 
 ## Integration tests
-If `backendAccess: true` and TEST_SPEC.md has specs tagged `Test type: Integration`:
-- Run: `flutter test integration_test/`
+Always run if TEST_SPEC.md has specs tagged `Test type: Integration`:
+- Run: `patrol test integration_test/`
+- Tool: Patrol (default for all mobile integration tests)
 - If integration tests fail: list each failing test with the SPEC-XXX it covers
 
 ## Output

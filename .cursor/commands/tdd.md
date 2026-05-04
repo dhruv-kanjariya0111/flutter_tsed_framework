@@ -32,14 +32,10 @@ Show research summary before proceeding to implementation:
 After writing unit and widget failing tests (Phase 2), the tester agent MUST:
 1. Read TEST_SPEC.md
 2. Find all specs tagged `Test type: Integration` that apply to this feature
-3. Write integration test files for those specs ONLY if `backendAccess: true` in PROJECT_CONFIG.md
-4. If `backendAccess: false`:
-   ```
-   ℹ️  Integration tests skipped — backendAccess: false in PROJECT_CONFIG.md.
-      Set backendAccess: true when backend is available to enable them.
-   ```
+3. Always write integration tests using **Patrol** — they run regardless of `backendAccess` setting
+4. Integration test files go in: `integration_test/<feature>_integration_test.dart`
+5. Run with: `patrol test integration_test/`
 Integration tests target real backend (or emulator) — never mock the HTTP layer.
-Integration test files go in: `integration_test/<feature>_integration_test.dart`
 
 ## Environment Note
 If the feature behaves differently per environment (dev vs prod), add a test variant that reads from `.env.dev`:

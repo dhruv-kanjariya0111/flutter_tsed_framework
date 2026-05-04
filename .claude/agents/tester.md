@@ -31,6 +31,40 @@ Contract tests:
 - Fixture JSON deserializes to Flutter model without error
 - All required fields present and correctly typed
 
+## Integration Test Phase
+After writing unit and widget tests:
+
+1. Read TEST_SPEC.md — find all specs where `Test type: Integration`
+2. Always write integration tests — they run regardless of `backendAccess` setting
+3. Integration test file location: `integration_test/<feature>_integration_test.dart`
+4. Use **Patrol** as the default integration test tool (`patrol` package)
+5. Integration tests use real HTTP (no mocks on the network layer)
+6. Integration tests inherit the Given/When/Then from TEST_SPEC.md exactly
+7. Never hardcode base URL in integration tests — read from `--dart-define-from-file`
+8. Run with: `patrol test integration_test/`
+
+## Integration Test Template
+```dart
+// integration_test/<feature>_integration_test.dart
+import 'package:patrol/patrol.dart';
+
+void main() {
+  patrolTest(
+    'SPEC-XXX: <title from TEST_SPEC>',
+    ($) async {
+      // Given
+      // <setup real state>
+
+      // When
+      // <trigger action>
+
+      // Then
+      // <assert real outcome>
+    },
+  );
+}
+```
+
 ## Coverage Report Format
 Total: X tests
 Coverage: X.X% line

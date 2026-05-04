@@ -62,6 +62,7 @@ roles: [user]
 
 ## Testing
 contractTesting: true
+integrationFramework: patrol  # patrol | maestro | both — default tool for all integration tests
 e2eFramework: patrol          # patrol | maestro | both
 bugPatternsFile: BUG_PATTERNS.md
 testSpecFile: TEST_SPEC.md
