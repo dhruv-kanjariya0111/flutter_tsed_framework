@@ -1,34 +1,51 @@
-# /review <feature> — Code Review
+# /review <feature> — 8-Dimension Code Review
 
-## Flow
-1. reviewer agent performs 8-dimension review (see reviewer.md)
-2. Backend review: controller purity, DTO validation, auth, rate limiting
-3. Contract review: openapi.yaml ↔ Flutter models exact match
-4. A11y review: all Semantics present
-5. Performance review: no budget violations
+## Role
+Delegate to reviewer agent. 8-dimension check. Verdict: APPROVE | PASS_WITH_WARNINGS | FAIL.
 
-## Backend Review Branching
-Read `backendFramework` from PROJECT_CONFIG.md:
-- `tsed`: review Ts.ED controller purity, DTO validation, `@UseBefore` guards, rate limiting
-- `node`: review route handler thinness, zod/joi validation, middleware chain, no business logic in routes
-- `supabase` or `firebase`: review RLS policies reference (inform developer — cannot be reviewed in code), Flutter service layer only
-- `none`: Flutter-only review
+## Review dimensions
+1. Architecture — layer violations, cross-feature imports
+2. State management — PATTERN-001 (stale state), disposal, autoDispose
+3. Error handling — all Failure types, UI error/loading/empty states
+4. Testing — coverage ≥ 85%, all relevant BUG_PATTERNS covered
+5. Security — auth guards, secret handling, ProGuard
+6. Performance — const usage, ListView.builder, compute(), RepaintBoundary
+7. Accessibility — Semantics on all interactive widgets, 48×48 touch targets, contrast
+8. API contract — Flutter models match openapi.yaml exactly
 
-## Verdict
-APPROVE — merge ready
-PASS_WITH_WARNINGS — merge with tracked issues
-FAIL — block merge, list required fixes
+## Backend review additions
+- Controller purity (no business logic)
+- DTO validation completeness
+- Auth guard on protected endpoints
+- Rate limiting on public endpoints
+- No raw Prisma types in responses
 
-## Post-Review
-reviewer agent appends lesson to MEMORY.md
+## Verdict options
+- APPROVE — all dimensions pass
+- PASS_WITH_WARNINGS — minor issues; can merge with tracking
+- FAIL — must fix before merge
+
+## Post-review: MEMORY.md update (mandatory)
+Always append to MEMORY.md ## Review Lessons:
+```
+[DATE] LESSON: <what was found> | FEATURE: <name> | DIMENSION: <which>
+```
+
+## Post-review: Bug pattern sync (automatic)
+After every review, check if any new failure mode was identified that is not already in BUG_PATTERNS.md.
+- If new pattern found → append to BUG_PATTERNS.md, then regenerate TEST_SPEC.md
+- If no new patterns → skip silently
+- To suppress: `/review <feature> --skip-regen`
+
+This replaces the need for a separate `/analyze-bugs` command. The review loop is now self-sealing: every review that finds a new issue automatically closes the gap in test coverage.
 
 ## What's next
 ```
-✅ Done: 8-dimension review complete. Verdict: <APPROVE | PASS_WITH_WARNINGS | FAIL>
+✅ Done: Review complete.
 
-👉 APPROVE → /release patch|minor|major
-   PASS_WITH_WARNINGS → fix warnings listed above, then /verify again
-   FAIL → fix failures listed above, restart from Phase 3 of /tdd
+APPROVE → /release patch|minor|major (if this was the last feature before release)
+WARN    → fix warnings, re-run /verify, then merge
+FAIL    → fix failures, restart from /tdd Phase 3
 
 💡 Example:
    /release minor
