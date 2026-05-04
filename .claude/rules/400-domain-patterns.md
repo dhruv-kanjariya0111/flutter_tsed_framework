@@ -1,0 +1,30 @@
+# Domain Patterns
+
+## Entities
+- Immutable (@freezed). No setters.
+- Identity by ID (equatable by id field).
+- Factory constructors: Entity.create() for new, Entity.fromPersistence() for loaded.
+- No validation in entity constructor — use value objects for validated fields.
+
+## Value Objects
+- Validate in constructor. Throw DomainException on invalid input.
+- Equatable by value (not identity).
+- Example: EmailAddress('user@example.com') — throws if invalid format.
+
+## Sealed Failure Hierarchy
+abstract class Failure {
+  const Failure(this.message);
+  final String message;
+  String toUserMessage();  // Human-readable. Never expose stack traces.
+}
+
+class NetworkFailure extends Failure { ... }
+class AuthFailure extends Failure { ... }
+class NotFoundFailure extends Failure { ... }
+class ValidationFailure extends Failure { ... }
+class ServerFailure extends Failure { ... }
+
+## Repository Pattern
+- Interface in domain/repositories/. Returns Either<Failure, T> or throws Failure.
+- Implementation in data/repositories/. Catches all exceptions, converts to Failure types.
+- Never let Dio/Firebase/Supabase types leak into domain.

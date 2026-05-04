@@ -1,0 +1,16 @@
+# Gesture System
+
+## Core Gestures (minimum 6, all registered at app startup)
+1. tap            — standard action. HapticFeedback.lightImpact().
+2. longPress      — contextual menu. HapticFeedback.mediumImpact().
+3. swipeHorizontal — navigation/dismiss. HapticFeedback.lightImpact().
+4. swipeVertical  — pull-to-refresh / scroll-to-top. No haptic.
+5. doubleTap      — like/favorite/zoom. HapticFeedback.lightImpact().
+6. pinchZoom      — media viewer / maps. No haptic.
+
+## GestureRegistry Rules
+- All gestures registered in core/gestures/gesture_registry.dart.
+- New gestures: GestureRegistry.register(name, handler).
+- Use GestureDetector or Dismissible — never raw Pointer events for standard gestures.
+- Nested gesture conflicts: GestureDetector.behavior = HitTestBehavior.translucent.
+- Accessibility: gestures must have semantic alternatives (e.g. longPress = context menu button).

@@ -1,0 +1,36 @@
+# Dart Code Quality
+
+## Null Safety
+- Avoid ! operator except in tests. Use ?. and ?? instead.
+- late only when initialization is guaranteed before first access.
+- Never late without initialization in production code.
+
+## Immutability
+- Domain entities: @freezed.
+- Configuration objects: @immutable.
+- Collections: use const [] and const {} where possible.
+- Never mutate a list/map passed as parameter.
+
+## Async Patterns
+- async/await over .then().catchError() chains.
+- Always handle Future errors — never unhandled Future.
+- StreamSubscription: always cancel in dispose(). Store reference.
+- Never await inside setState() — update state once after all awaits complete.
+
+## Naming
+- Classes: PascalCase. Files: snake_case. Constants: camelCase.
+- Private members: _leadingUnderscore.
+- Boolean variables: isLoading, hasError, canSubmit (not loading, error, submit).
+- Callbacks: onTap, onSubmit, onError (not tap, submit, error).
+
+## Analysis Options
+analysis_options.yaml must include:
+  strict-casts: true
+  strict-inference: true  
+  strict-raw-types: true
+  missing_return: error
+
+## Code Generation
+- build_runner: always --delete-conflicting-outputs.
+- Commit generated files (*.g.dart, *.freezed.dart).
+- Never manually edit generated files.

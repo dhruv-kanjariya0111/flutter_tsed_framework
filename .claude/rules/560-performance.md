@@ -1,0 +1,31 @@
+# Performance Budgets
+
+## Startup
+- First meaningful paint: < 2000ms on reference device (mid-range Android).
+- App startup: defer all heavy initialization to post-first-frame via
+  WidgetsBinding.instance.addPostFrameCallback().
+- Never block main isolate: use compute() for JSON parsing > 10KB.
+- Splash → home transition: < 1500ms after auth check.
+
+## Runtime
+- Maintain 60fps (16ms per frame budget). 120fps on capable devices.
+- Use const constructors everywhere possible.
+- RepaintBoundary around independently animated widgets.
+- Avoid rebuilding parent trees: use Consumer/Selector for granular rebuilds.
+- ListView: always use ListView.builder. Never ListView(children:[...]) for > 5 items.
+
+## App Size
+- Release APK: <= 25MB (new feature delta <= 1MB).
+- Enable --split-per-abi in release builds.
+- Run flutter build appbundle --analyze-size in CI. Fail if delta > 5%.
+- Image assets: WebP format. No PNG > 500KB in bundle.
+
+## Codemagic Size Gate
+Add this to pr-check workflow:
+  flutter build appbundle --analyze-size --target-platform android-arm64
+  Check apk-analysis.json total_size < 26214400 (25MB)
+
+## Memory
+- Dispose all StreamSubscriptions, AnimationControllers, ScrollControllers in dispose().
+- Use const widgets for static subtrees.
+- Profile with flutter DevTools — zero memory leaks before release.

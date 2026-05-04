@@ -1,7 +1,7 @@
 const path = require("path");
 const os = require("os");
 const readline = require("readline");
-const { copyInternalFiles, copyUserFacingFiles, mergeSettings, printSummary } = require("./installer");
+const { copyInternalFiles, copyUserFacingDirs, copyUserFacingFiles, mergeSettings, printSummary } = require("./installer");
 
 const PKG_ROOT = path.join(__dirname, "..");
 
@@ -56,12 +56,11 @@ async function setupCursor() {
     : path.join(process.cwd(), ".cursor");
 
   const settingsPath = path.join(targetBase, "settings.json");
-  const namespacedDir = "flutter-tsed";
 
-  const internalDirs = [".cursor/agents", ".cursor/rules"];
+  const internalDirs = [".cursor/agents", ".cursor/commands", ".cursor/hooks", ".cursor/rules"];
   let internalResults;
   try {
-    internalResults = copyInternalFiles({ pkgRoot: PKG_ROOT, targetBase, internalDirs, namespacedDir });
+    internalResults = copyInternalFiles({ pkgRoot: PKG_ROOT, targetBase, internalDirs });
   } catch (err) {
     console.error(`[error] Failed to copy internal files: ${err.message}`);
     if (err.code === "EACCES") {
@@ -79,22 +78,23 @@ async function setupCursor() {
     process.exit(1);
   }
 
-  const userFacingFiles = ["PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md"];
-  const userResults = copyUserFacingFiles({
-    pkgRoot: PKG_ROOT,
-    cwd: process.cwd(),
-    userFacingFiles,
-    force,
-  });
+  const userFacingFiles = [
+    ".cursorignore", "codemagic.yaml", "lefthook.yml",
+    "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md", "CHANGELOG.md",
+  ];
+  const userResults = [
+    ...copyUserFacingFiles({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingFiles, force }),
+    ...copyUserFacingDirs({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingDirs: ["frontend", "backend", "scripts", ".github"], force }),
+  ];
 
   const settingsKeys = isGlobal
     ? {
-        "cursor.agentsDirectory": path.join(os.homedir(), ".cursor", namespacedDir, "agents"),
-        "cursor.rulesDirectory": path.join(os.homedir(), ".cursor", namespacedDir, "rules"),
+        "cursor.agentsDirectory": path.join(os.homedir(), ".cursor", "agents"),
+        "cursor.rulesDirectory": path.join(os.homedir(), ".cursor", "rules"),
       }
     : {
-        "cursor.agentsDirectory": path.join(".cursor", namespacedDir, "agents"),
-        "cursor.rulesDirectory": path.join(".cursor", namespacedDir, "rules"),
+        "cursor.agentsDirectory": path.join(".cursor", "agents"),
+        "cursor.rulesDirectory": path.join(".cursor", "rules"),
       };
 
   try {

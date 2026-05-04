@@ -1,0 +1,34 @@
+# Feature Flags
+
+## Check PROJECT_CONFIG.md: featureFlags and featureFlagProvider before applying.
+
+## FeatureFlagService Interface
+abstract class FeatureFlagService {
+  bool isEnabled(String flag);
+  Future<void> initialize();
+  Stream<Map<String, bool>> get flagUpdates;
+}
+
+## Firebase Remote Config (default)
+- Initialize before app routing resolves.
+- Default values in remote_config_defaults.json (committed).
+- Minimum fetch interval: 12h production, 0s debug.
+- Activate fetched values immediately on launch.
+
+## Flag Naming Convention
+- feature_<name>_enabled: feature_dark_mode_enabled
+- experiment_<name>_variant: experiment_checkout_v2_enabled
+- kill_switch_<service>: kill_switch_payments
+
+## Usage Pattern
+if (featureFlagService.isEnabled('feature_new_onboarding')) {
+  // New flow
+} else {
+  // Existing flow
+}
+
+## Rules
+- Flags are temporal — set a removal date in a TODO comment.
+- Dead code cleanup: remove flag + old branch after 2 sprints.
+- A/B test variants: log analytics event on each branch.
+- Emergency kill switches: always test kill switch path in staging.

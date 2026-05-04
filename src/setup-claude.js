@@ -1,7 +1,7 @@
 const path = require("path");
 const os = require("os");
 const readline = require("readline");
-const { copyInternalFiles, copyUserFacingFiles, mergeSettings, printSummary } = require("./installer");
+const { copyInternalFiles, copyUserFacingDirs, copyUserFacingFiles, mergeSettings, printSummary } = require("./installer");
 
 const PKG_ROOT = path.join(__dirname, "..");
 
@@ -56,12 +56,11 @@ async function setupClaude() {
     : path.join(process.cwd(), ".claude");
 
   const settingsPath = path.join(targetBase, "settings.json");
-  const namespacedDir = "flutter-tsed";
 
   const internalDirs = [".claude/agents", ".claude/commands", ".claude/skills"];
   let internalResults;
   try {
-    internalResults = copyInternalFiles({ pkgRoot: PKG_ROOT, targetBase, internalDirs, namespacedDir });
+    internalResults = copyInternalFiles({ pkgRoot: PKG_ROOT, targetBase, internalDirs });
   } catch (err) {
     console.error(`[error] Failed to copy internal files: ${err.message}`);
     if (err.code === "EACCES") {
@@ -79,22 +78,24 @@ async function setupClaude() {
     process.exit(1);
   }
 
-  const userFacingFiles = ["CLAUDE.md", "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md"];
-  const userResults = copyUserFacingFiles({
-    pkgRoot: PKG_ROOT,
-    cwd: process.cwd(),
-    userFacingFiles,
-    force,
-  });
+  const userFacingFiles = [
+    ".claudeignore", "codemagic.yaml", "lefthook.yml",
+    "CLAUDE.md", "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md",
+    "CHANGELOG.md", "CODEBASE_EXPLAINED.md",
+  ];
+  const userResults = [
+    ...copyUserFacingFiles({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingFiles, force }),
+    ...copyUserFacingDirs({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingDirs: ["frontend", "backend", "scripts", ".github"], force }),
+  ];
 
   const settingsKeys = isGlobal
     ? {
-        customAgentsDirectory: path.join(os.homedir(), ".claude", namespacedDir, "agents"),
-        customCommandsDirectory: path.join(os.homedir(), ".claude", namespacedDir, "commands"),
+        customAgentsDirectory: path.join(os.homedir(), ".claude", "agents"),
+        customCommandsDirectory: path.join(os.homedir(), ".claude", "commands"),
       }
     : {
-        customAgentsDirectory: path.join(".claude", namespacedDir, "agents"),
-        customCommandsDirectory: path.join(".claude", namespacedDir, "commands"),
+        customAgentsDirectory: path.join(".claude", "agents"),
+        customCommandsDirectory: path.join(".claude", "commands"),
       };
 
   try {

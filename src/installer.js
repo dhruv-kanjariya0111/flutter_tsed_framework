@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-function copyInternalFiles({ pkgRoot, targetBase, internalDirs, namespacedDir }) {
+function copyInternalFiles({ pkgRoot, targetBase, internalDirs }) {
   const results = [];
   for (const srcDir of internalDirs) {
     const srcPath = path.join(pkgRoot, srcDir);
@@ -10,7 +10,7 @@ function copyInternalFiles({ pkgRoot, targetBase, internalDirs, namespacedDir })
       continue;
     }
     const subDir = path.basename(srcDir);
-    const destDir = path.join(targetBase, namespacedDir, subDir);
+    const destDir = path.join(targetBase, subDir);
     copyDir(srcPath, destDir, results);
   }
   return results;
@@ -28,6 +28,26 @@ function copyDir(src, dest, results) {
       results.push({ file: destEntry, action: "installed" });
     }
   }
+}
+
+function copyUserFacingDirs({ pkgRoot, cwd, userFacingDirs, force }) {
+  const results = [];
+  for (const dir of userFacingDirs) {
+    const src = path.join(pkgRoot, dir);
+    const dest = path.join(cwd, dir);
+    if (!fs.existsSync(src)) {
+      results.push({ file: dir + "/", action: "missing-source" });
+      continue;
+    }
+    const alreadyExists = fs.existsSync(dest);
+    if (alreadyExists && !force) {
+      results.push({ file: dir + "/", action: "skipped" });
+      continue;
+    }
+    copyDir(src, dest, []);
+    results.push({ file: dir + "/", action: alreadyExists ? "updated" : "copied" });
+  }
+  return results;
 }
 
 function copyUserFacingFiles({ pkgRoot, cwd, userFacingFiles, force }) {
@@ -85,4 +105,4 @@ function printSummary({ label, internalResults, userResults, settingsPath }) {
   console.log(`${"[updated]".padEnd(12)} ${settingsPath}`);
 }
 
-module.exports = { copyInternalFiles, copyUserFacingFiles, mergeSettings, printSummary };
+module.exports = { copyInternalFiles, copyUserFacingDirs, copyUserFacingFiles, mergeSettings, printSummary };

@@ -1,0 +1,35 @@
+# Critical Context — Read Before Any Task
+
+## Mandatory Pre-Task Steps
+1. Read PROJECT_CONFIG.md (architecture, stateManagement, backendType, feature toggles)
+2. Read MEMORY.md (past decisions + reviewer lessons)
+3. Read BUG_PATTERNS.md (all known failure modes)
+4. Read TEST_SPEC.md (coverage obligations)
+
+## Non-Negotiable Code Rules
+- Frontend imports: package:frontend/... only. Never relative across features.
+- All errors: sealed Failure hierarchy. UI never receives raw HTTP errors or exceptions.
+- Colors, spacing, typography: theme extension tokens ONLY. No hardcoded values.
+- Interactivity: every interactive widget carries Semantics(identifier, label, hint).
+- Lists: ListView.builder or Sliver widgets. Never children:[] for dynamic content.
+- Images: CachedNetworkImage with placeholder AND errorWidget. Always.
+- State: no setState() in screen widgets. Providers/notifiers only.
+- Secrets: FlutterSecureStorage only. Never SharedPreferences for sensitive data.
+
+## Definition of Done
+Frontend:
+  dart format --set-exit-if-changed .
+  flutter analyze --fatal-infos
+  flutter test --coverage (>=85% line coverage)
+  /a11y-check PASS
+  /perf-check PASS
+
+Backend:
+  npm run lint (zero warnings, zero errors)
+  npm run test (all pass)
+  npm run test:contract (openapi.yaml <-> models in sync)
+
+## Backend Pre-Implementation
+- Always read shared/openapi.yaml before writing any endpoint.
+- Update openapi.yaml FIRST, then implement.
+- Never expose raw Prisma entities in API responses.

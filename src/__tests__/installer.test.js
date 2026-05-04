@@ -32,7 +32,7 @@ describe("installer", () => {
     jest.resetModules();
   });
 
-  test("copies internal files into namespaced folder, always overwriting", () => {
+  test("copies internal files directly under targetBase, always overwriting", () => {
     writeFile(pkgRoot, ".claude/agents/orchestrator.md", "agent content");
     writeFile(pkgRoot, ".claude/commands/tdd.md", "command content");
 
@@ -40,11 +40,10 @@ describe("installer", () => {
       pkgRoot,
       targetBase,
       internalDirs: [".claude/agents", ".claude/commands"],
-      namespacedDir: "flutter-tsed",
     });
 
-    const agentDest = path.join(targetBase, "flutter-tsed", "agents", "orchestrator.md");
-    const cmdDest = path.join(targetBase, "flutter-tsed", "commands", "tdd.md");
+    const agentDest = path.join(targetBase, "agents", "orchestrator.md");
+    const cmdDest = path.join(targetBase, "commands", "tdd.md");
     expect(fs.existsSync(agentDest)).toBe(true);
     expect(fs.readFileSync(agentDest, "utf8")).toBe("agent content");
     expect(fs.existsSync(cmdDest)).toBe(true);
@@ -52,7 +51,7 @@ describe("installer", () => {
 
   test("overwrites existing internal files on re-run", () => {
     writeFile(pkgRoot, ".claude/agents/orchestrator.md", "new content");
-    const dest = path.join(targetBase, "flutter-tsed", "agents", "orchestrator.md");
+    const dest = path.join(targetBase, "agents", "orchestrator.md");
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.writeFileSync(dest, "old content");
 
@@ -60,10 +59,47 @@ describe("installer", () => {
       pkgRoot,
       targetBase,
       internalDirs: [".claude/agents"],
-      namespacedDir: "flutter-tsed",
     });
 
     expect(fs.readFileSync(dest, "utf8")).toBe("new content");
+  });
+
+  test("copies scaffold dirs to cwd as single summary entry, skips if exists", () => {
+    writeFile(pkgRoot, "frontend/lib/main.dart", "void main() {}");
+    writeFile(pkgRoot, "scripts/setup.sh", "#!/bin/bash");
+
+    const results = installer.copyUserFacingDirs({
+      pkgRoot,
+      cwd,
+      userFacingDirs: ["frontend", "scripts"],
+      force: false,
+    });
+
+    expect(fs.existsSync(path.join(cwd, "frontend", "lib", "main.dart"))).toBe(true);
+    expect(results.find(r => r.file === "frontend/").action).toBe("copied");
+
+    const results2 = installer.copyUserFacingDirs({
+      pkgRoot,
+      cwd,
+      userFacingDirs: ["frontend"],
+      force: false,
+    });
+    expect(results2.find(r => r.file === "frontend/").action).toBe("skipped");
+  });
+
+  test("copyUserFacingDirs overwrites on --force", () => {
+    writeFile(pkgRoot, "frontend/lib/main.dart", "new content");
+    writeFile(cwd, "frontend/lib/main.dart", "old content");
+
+    const results = installer.copyUserFacingDirs({
+      pkgRoot,
+      cwd,
+      userFacingDirs: ["frontend"],
+      force: true,
+    });
+
+    expect(fs.readFileSync(path.join(cwd, "frontend", "lib", "main.dart"), "utf8")).toBe("new content");
+    expect(results.find(r => r.file === "frontend/").action).toBe("updated");
   });
 
   test("copies user-facing files to cwd, skips if exists", () => {

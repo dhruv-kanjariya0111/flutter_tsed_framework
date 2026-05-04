@@ -1,0 +1,25 @@
+# Routing
+
+## GoRouter (default)
+- Single router instance in core/router/app_router.dart.
+- All routes defined as GoRoute constants (never inline strings).
+- Route guards: redirect callback checks auth state.
+- Deep links: preserve path through auth redirect (fix for PATTERN-006).
+- Error route: GoRouter.errorBuilder for 404/unknown routes.
+- Nested navigation: ShellRoute for bottom nav tabs.
+- Named routes: GoRouter.of(context).goNamed() — never hardcoded paths.
+
+## Deep Link Auth Fix (PATTERN-006)
+  redirect: (context, state) {
+    final isLoggedIn = ref.read(authNotifierProvider).hasValue;
+    if (!isLoggedIn && !state.matchedLocation.startsWith('/auth')) {
+      // Preserve intended destination
+      return '/auth/login?redirect=${Uri.encodeComponent(state.matchedLocation)}';
+    }
+    return null;
+  }
+
+## GetX Router (if configured)
+- Named routes only. GetPage list in AppPages.routes.
+- Middleware: GetMiddleware for auth guards.
+- Bindings: lazy load per page.
