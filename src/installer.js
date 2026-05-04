@@ -19,6 +19,7 @@ function copyInternalFiles({ pkgRoot, targetBase, internalDirs }) {
 function copyDir(src, dest, results) {
   fs.mkdirSync(dest, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    if (entry.name === ".DS_Store") continue;
     const srcEntry = path.join(src, entry.name);
     const destEntry = path.join(dest, entry.name);
     if (entry.isDirectory()) {
@@ -70,6 +71,24 @@ function copyUserFacingFiles({ pkgRoot, cwd, userFacingFiles, force }) {
   return results;
 }
 
+function mergeHooks(existing, incoming) {
+  const result = Object.assign({}, existing);
+  for (const [event, entries] of Object.entries(incoming)) {
+    if (!result[event]) {
+      result[event] = entries;
+      continue;
+    }
+    const seen = new Set(
+      result[event].flatMap(e => (e.hooks || [e]).map(h => h.command))
+    );
+    const novel = entries.filter(e =>
+      (e.hooks || [e]).every(h => !seen.has(h.command))
+    );
+    result[event] = [...result[event], ...novel];
+  }
+  return result;
+}
+
 function mergeSettings(settingsPath, keysToMerge) {
   let existing = {};
   if (fs.existsSync(settingsPath)) {
@@ -83,6 +102,9 @@ function mergeSettings(settingsPath, keysToMerge) {
     }
   }
   const merged = Object.assign({}, existing, keysToMerge);
+  if (existing.hooks && keysToMerge.hooks) {
+    merged.hooks = mergeHooks(existing.hooks, keysToMerge.hooks);
+  }
   fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
   fs.writeFileSync(settingsPath, JSON.stringify(merged, null, 2) + "\n");
 }
@@ -105,4 +127,4 @@ function printSummary({ label, internalResults, userResults, settingsPath }) {
   console.log(`${"[updated]".padEnd(12)} ${settingsPath}`);
 }
 
-module.exports = { copyInternalFiles, copyUserFacingDirs, copyUserFacingFiles, mergeSettings, printSummary };
+module.exports = { copyInternalFiles, copyUserFacingDirs, copyUserFacingFiles, mergeSettings, mergeHooks, printSummary };

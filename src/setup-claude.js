@@ -1,3 +1,4 @@
+const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const readline = require("readline");
@@ -81,21 +82,33 @@ async function setupClaude() {
   const userFacingFiles = [
     ".claudeignore", "codemagic.yaml", "lefthook.yml",
     "CLAUDE.md", "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md",
-    "CHANGELOG.md", "CODEBASE_EXPLAINED.md", "PRD_TEMPLATE.md",
+    "PRD_TEMPLATE.md",
   ];
   const userResults = [
     ...copyUserFacingFiles({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingFiles, force }),
     ...copyUserFacingDirs({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingDirs: ["frontend", "backend", "scripts", ".github", "shared"], force }),
   ];
 
+  const pkgSettingsPath = path.join(PKG_ROOT, ".claude", "settings.json");
+  let pkgHooks = {};
+  if (fs.existsSync(pkgSettingsPath)) {
+    try {
+      pkgHooks = JSON.parse(fs.readFileSync(pkgSettingsPath, "utf8")).hooks || {};
+    } catch {
+      // ignore malformed package settings
+    }
+  }
+
   const settingsKeys = isGlobal
     ? {
         customAgentsDirectory: path.join(os.homedir(), ".claude", "agents"),
         customCommandsDirectory: path.join(os.homedir(), ".claude", "commands"),
+        ...(Object.keys(pkgHooks).length ? { hooks: pkgHooks } : {}),
       }
     : {
         customAgentsDirectory: path.join(".claude", "agents"),
         customCommandsDirectory: path.join(".claude", "commands"),
+        ...(Object.keys(pkgHooks).length ? { hooks: pkgHooks } : {}),
       };
 
   try {

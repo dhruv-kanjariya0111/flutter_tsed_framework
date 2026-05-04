@@ -57,7 +57,7 @@ async function setupCursor() {
 
   const settingsPath = path.join(targetBase, "settings.json");
 
-  const internalDirs = [".cursor/agents", ".cursor/commands", ".cursor/hooks", ".cursor/rules"];
+  const internalDirs = [".cursor/agents", ".cursor/commands", ".cursor/hooks", ".cursor/rules", ".cursor/plans"];
   let internalResults;
   try {
     internalResults = copyInternalFiles({ pkgRoot: PKG_ROOT, targetBase, internalDirs });
@@ -81,7 +81,7 @@ async function setupCursor() {
   const userFacingFiles = [
     ".cursorignore", "codemagic.yaml", "lefthook.yml",
     "CLAUDE.md", "PROJECT_CONFIG.md", "MEMORY.md", "BUG_PATTERNS.md", "TEST_SPEC.md", "AGENTS.md",
-    "CHANGELOG.md", "CODEBASE_EXPLAINED.md", "PRD_TEMPLATE.md",
+    "PRD_TEMPLATE.md",
   ];
   const userResults = [
     ...copyUserFacingFiles({ pkgRoot: PKG_ROOT, cwd: process.cwd(), userFacingFiles, force }),
