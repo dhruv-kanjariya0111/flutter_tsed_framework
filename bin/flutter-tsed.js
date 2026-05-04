@@ -6,13 +6,13 @@ const command = process.argv[2];
 
 const commandHandlers = {
   "sync-rules": () => require(path.join(__dirname, "../src/sync-rules"))(),
+  "sync-commands": () => require(path.join(__dirname, "../src/sync-commands"))(),
   init: () => require(path.join(__dirname, "../src/init"))(),
   "--mcp": () => require(path.join(__dirname, "../src/mcp-server"))(),
 };
 
 if (!command || command === "-h" || command === "--help") {
-  // Keep help output simple for local CLI and MCP debugging.
-  console.log("Usage: flutter-tsed <sync-rules|init|--mcp>");
+  console.log("Usage: flutter-tsed <sync-rules|sync-commands|init|--mcp>");
   process.exit(0);
 }
 

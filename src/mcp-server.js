@@ -50,10 +50,20 @@ function readCommandDoc(commandName) {
   return fs.readFileSync(docPath, "utf8");
 }
 
+function extractDescription(commandName) {
+  const doc = readCommandDoc(commandName);
+  const firstLine = doc.split("\n")[0] || "";
+  // Strip leading `#` chars and trim to get the title
+  const title = firstLine.replace(/^#+\s*/, "").trim();
+  return title || `Run the /${commandName} workflow`;
+}
+
 function registerCommandTool(server, commandName) {
+  const description = extractDescription(commandName);
   server.tool(
     commandName,
-    { feature: z.string().optional() },
+    description,
+    { feature: z.string().optional().describe("Feature or module name to target") },
     async ({ feature } = {}) => {
       const docs = readCommandDoc(commandName);
       const featureSuffix = feature ? `\n\nRequested feature: ${feature}` : "";
@@ -62,6 +72,29 @@ function registerCommandTool(server, commandName) {
           {
             type: "text",
             text: `Command: /${commandName}\n\n${docs}${featureSuffix}`,
+          },
+        ],
+      };
+    }
+  );
+}
+
+function registerCommandPrompt(server, commandName) {
+  const description = extractDescription(commandName);
+  server.prompt(
+    commandName,
+    { description, arguments: [{ name: "feature", description: "Feature or module name to target", required: false }] },
+    ({ feature } = {}) => {
+      const docs = readCommandDoc(commandName);
+      const featureSuffix = feature ? `\n\nFeature: ${feature}` : "";
+      return {
+        messages: [
+          {
+            role: "user",
+            content: {
+              type: "text",
+              text: `${docs}${featureSuffix}`,
+            },
           },
         ],
       };
@@ -87,6 +120,7 @@ async function startMcpServer() {
 
   for (const commandName of commandNames) {
     registerCommandTool(server, commandName);
+    registerCommandPrompt(server, commandName);
   }
 
   const transport = new StdioServerTransport();
