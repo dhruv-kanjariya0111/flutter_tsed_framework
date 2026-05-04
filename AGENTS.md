@@ -65,13 +65,16 @@
 ## Command Reference (all commands)
 | Command | Purpose |
 |---|---|
-| `/init` | Project setup wizard (new / existing / migrating / mid-project) |
+| `/init` | Project setup wizard — accepts PRD to auto-fill config and generate feature backlog (new / existing / migrating / mid-project) |
 | `/plan <feature>` | Wave-ordered feature plan with web research |
 | `/api-design <feature>` | OpenAPI contract design (tsed/node only) |
 | `/tdd <feature>` | Full Flutter TDD cycle |
 | `/tdd-backend <feature>` | Full backend TDD cycle (branched by backendFramework) |
 | `/fix <description>` | Research + fix a bug with failing test first |
 | `/integrate <service>` | Add a 3rd-party service with manual step guidance |
+| `/jira fetch <id>` | Fetch and display a Jira ticket with description and acceptance criteria |
+| `/jira start <id>` | Fetch ticket → create git branch → mark In Progress in Jira |
+| `/jira done <id>` | Mark ticket Done in Jira → prompt to open PR |
 | `/migrate <target>` | Platform migration (absorbs analyze-source as Phase 0) |
 | `/analyze-source <path>` | Migration source analysis alias |
 | `/refactor <module>` | Behavior-neutral cleanup |

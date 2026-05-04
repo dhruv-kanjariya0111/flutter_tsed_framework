@@ -1,179 +1,164 @@
-# /init — Project Initialization Wizard
-
-## Trigger
-First command to run on any project — new, existing, migrating, or partial adoption.
-
-## Step 0: Detect entry point
-Ask the developer ONE question before doing anything:
-> "How are you starting? Pick the closest match:
-> A) Brand new project (empty repo)
-> B) Existing Flutter project (already has lib/ code)
-> C) Migrating from another platform (React, React Native, Android, iOS, web)
-> D) Adding this framework to a project already in progress
->
-> Type A, B, C, or D."
-
-Route to the matching flow below.
-
----
+Project initialization wizard. Run on first setup of a new or existing project.
 
 ## Flow A: New Project
 
+### Step 0: PRD Check (always first — before any other question)
+
+Ask the developer:
+> "Do you have a Product Requirements Document (PRD)?
+>  A) Yes — I have a file (give me the path)
+>  B) Yes — I'll paste it now
+>  C) No — I'll answer questions manually
+>  D) No — give me the PRD template to fill in first"
+
+**Option A:** Read the file at the given path. Parse it using the PRD Parsing Rules below.
+
+**Option B:** Accept pasted text. Parse it using the PRD Parsing Rules below.
+
+**Option C:** Skip to Step 1. Ask all questions manually as before.
+
+**Option D:**
+```
+📄 PRD_TEMPLATE.md copied to your project root.
+   Fill it in with your BA and re-run /init when ready.
+
+   Tip: every field maps directly to a config value the framework uses.
+   A complete PRD means zero manual questions during /init.
+```
+Copy `PRD_TEMPLATE.md` from the framework package to `<cwd>/PRD_TEMPLATE.md`. Stop. Do not continue the init flow.
+
+---
+
+### PRD Parsing Rules
+
+Parse the PRD markdown using these exact mappings:
+
+| PRD field | PROJECT_CONFIG.md field |
+|---|---|
+| `## Project > Name` | `name` |
+| `## Project > Description` | `description` |
+| `## Project > Platforms` | `platforms` |
+| `## Backend > Type` | `backendFramework` |
+| `## Backend > Auth strategy` | `authStrategy` |
+| `## Backend > Backend access locally` | `backendAccess` |
+| `## Roles > User roles` | `roles`, `multiRole` (true if >1 role) |
+| `## Non-Functional Requirements > Offline support` | `offlineFirst` |
+| `## Non-Functional Requirements > i18n` | `i18n` |
+| `## Non-Functional Requirements > Analytics` | `observability` |
+| `## Project Management > Jira` | `jira` |
+| `## Project Management > Jira project key` | `jiraProjectKey` |
+| `## Project Management > Jira URL` | stored in `backend/.env.dev` as `JIRA_URL` |
+
+Rules:
+- Field present and non-empty → use value as-is
+- Field missing or blank or still shows placeholder text (e.g. `[ios / android / both]`) → mark as `[needs answer]`
+- Features → each `### Feature N: <name>` heading becomes one backlog entry. `must-have` features go first, then `nice-to-have`.
+
+---
+
+### PRD Confirmation Summary
+
+After parsing, show:
+```
+📋 Parsed from PRD:
+   Project name:   <value or [needs answer]>
+   Platforms:      <value or [needs answer]>
+   Backend:        <backendFramework> + <authStrategy>
+   Roles:          <comma list or [needs answer]>
+   Features (<N>): ✓ <name1>  ✓ <name2>  ...
+   Jira:           <yes — KEY @ URL | no | [needs answer]>
+
+Does this look right? (confirm / correct any field)
+```
+
+Wait for developer response. Accept corrections field by field. Once confirmed:
+- Pre-fill all confirmed values into `PROJECT_CONFIG.md` — **do not re-ask questions for fields already confirmed**
+- Skip the Jira step in Step 7 if Jira was already parsed from the PRD
+
+---
+
+### PRD Backlog
+
+After `PROJECT_CONFIG.md` is written, append to `MEMORY.md`:
+
+```markdown
+## PRD Backlog
+<!-- Auto-generated from PRD on /init. Check off features as you /plan them. -->
+- [ ] /plan "<must-have feature 1>"
+- [ ] /plan "<must-have feature 2>"
+- [ ] /plan "<nice-to-have feature 1>"
+```
+
+(Replace with actual feature names parsed from the PRD, must-have first.)
+
+---
+
+### Step 1: Ask remaining questions (one at a time)
+
+Only ask about fields that were **not** already confirmed from the PRD.
+
 1. Ask (one at a time):
    - Project name?
+   - Project description?
    - Target platforms? (ios / android / both)
-   - Backend setup? → `tsed` | `node` | `supabase` | `firebase` | `hybrid` | `none`
-   - Do you have backend access locally? (yes/no) — only ask if backend != none
-   - Do you have a Figma link or design image? (yes/no)
+   - Architecture? (clean / layered)
+   - State management? (riverpod / bloc / provider)
+2. Ask: backendType (custom_tsed | supabase | firebase | hybrid)
+3. Ask: authStrategy, router, multiRole, roles
+4. Ask: enabledFeatures (featureFlags, offlineFirst, i18n, analytics)
+5. Write PROJECT_CONFIG.md with all answers
+6. Scaffold folder structure per chosen architecture
 
-2. For `backendType: supabase`:
-   ```
-   ⚠️  MANUAL STEP REQUIRED — Supabase setup (no CLI needed):
-   1. Create a project at https://supabase.com
-   2. Copy your Project URL and anon key from Settings → API
-   3. Add them to frontend/.env.dev:
-      SUPABASE_URL=https://xxxx.supabase.co
-      SUPABASE_ANON_KEY=your-anon-key
-   Tell me when done, or skip to continue without a live backend.
-   ```
+7. Ask: "Do you use Jira for project management? (yes / no)"
 
-3. For `backendType: firebase`:
+   **If yes:**
    ```
-   ⚠️  MANUAL STEP REQUIRED — Firebase setup:
-   1. Create a project at https://console.firebase.google.com
-   2. Download google-services.json → place at android/app/google-services.json
-   3. Download GoogleService-Info.plist → place at ios/Runner/GoogleService-Info.plist
-   4. Copy your Web API key from Project Settings → General
-   Tell me when done, or skip to continue without a live backend.
-   ```
+   ⚠️  MANUAL STEP REQUIRED — Jira setup:
+   1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
+   2. Click "Create API token" → give it a label → copy the token
+   3. Add these to backend/.env.dev:
+      JIRA_URL=https://yourcompany.atlassian.net
+      JIRA_EMAIL=you@company.com
+      JIRA_API_TOKEN=your-token-here
+      JIRA_PROJECT_KEY=APP
 
-4. For `backendAccess: false`:
-   ```
-   ℹ️  No backend access noted. All API calls will use mock data in tests.
-      Integration tests will be skipped until backendAccess is set to true.
-      You can update this anytime in PROJECT_CONFIG.md.
+   4. The following keys (no values) are already in backend/.env.example:
+      JIRA_URL=
+      JIRA_EMAIL=
+      JIRA_API_TOKEN=
+      JIRA_PROJECT_KEY=
+
+   Tell me when done, or type "skip" to continue without Jira.
    ```
 
-5. Write PROJECT_CONFIG.md with all collected values including:
-   - `environments: [dev, prod]`
-   - `devEnvFile: frontend/.env.dev`
-   - `prodEnvFile: frontend/.env.prod`
-   - `gitBranchingStrategy: gitflow`
-   - `mainBranch: main`
-   - `developBranch: develop`
+   After confirmation or skip:
+   - Write `jira: true` and `jiraProjectKey: <key>` to `PROJECT_CONFIG.md`
 
-6. Create environment files:
-   - `frontend/.env.dev` — with dev defaults + placeholder keys
-   - `frontend/.env.prod` — with prod placeholders (NEVER commit real values)
-   - `frontend/.env.example` — committed reference with all keys, no values
-   - `backend/.env.dev` — backend dev config (if backendFramework != none)
-   - `backend/.env.prod` — backend prod config placeholders
-   - `backend/.env.example` — backend committed reference
+   **If no / skip:**
+   - Write `jira: false` to `PROJECT_CONFIG.md`
+   - Do not add env keys
 
-7. Set up Git branching (if new repo or no branches exist):
-   ```
-   ⚠️  BRANCHING SETUP — I will create the following branches:
-      main    — production-ready code only
-      develop — integration branch (all features merge here first)
-   Shall I run: git checkout -b develop && git push -u origin develop? (yes/no)
-   ```
-   Wait for confirmation before running any git commands.
+   **If Jira was already parsed from a PRD in Step 0:** skip this prompt entirely — values are already confirmed.
 
-8. Scaffold folder structure matching `backendType`.
-9. Run `/analyze-bugs` if `BUG_PATTERNS.md` already exists.
+8. Set up Git branching (if new repo or no branches exist):
+   - Create `main` branch
+   - Create `develop` branch from `main`
+   - Set `develop` as default working branch
+9. Scaffold: Initialize CLAUDE.md, AGENTS.md, MEMORY.md (empty); Initialize BUG_PATTERNS.md, TEST_SPEC.md (templates)
+10. Generate pubspec.yaml with correct dependencies per config
+11. Generate package.json for backend
+12. Generate analysis_options.yaml
+13. Generate .env.example with required keys
+14. Install dependencies: flutter pub get + npm install
+15. Run /store-check to show required assets
 
----
+## Flow B: Existing Project
 
-## Flow B: Existing Flutter Project
-
-1. Scan: `find lib -maxdepth 3 -type d`
-2. Detect architecture from folder patterns (feature-first / layer-first / mixed)
+1. Scan: find lib -maxdepth 3 -type d
+2. Detect architecture from folder patterns
 3. Detect stateManagement from pubspec.yaml dependencies
 4. Detect router from pubspec.yaml dependencies
-5. Detect backendFramework from pubspec.yaml (supabase_flutter, firebase_core, http, dio)
-6. Check for existing .env files — note what's already set up
-7. Present findings:
-   ```
-   🔍 Detected:
-      Architecture: feature-first
-      State: riverpod
-      Router: go_router
-      Backend hint: supabase_flutter found → backendType=supabase
-      Env files: .env.dev found, .env.prod missing
-   Does this look right? (confirm / correct any field)
-   ```
-8. Write PROJECT_CONFIG.md with confirmed values.
-9. Create any missing environment files.
-10. Record in MEMORY.md `## Detected Architecture` section.
-11. Run `/analyze-bugs` if `BUG_PATTERNS.md` exists.
-
----
-
-## Flow C: Migration
-
-```
-ℹ️  For migrations, use:
-   /analyze-source <path-to-source-project>   ← analyzes the source codebase
-   /migrate <screen-name>                      ← migrates one screen at a time
-   /verify                                     ← run after every wave
-
-Start with: /analyze-source ./path/to/old-project
-```
-
-Set `type: existing` in PROJECT_CONFIG.md and run Flow B first to set up config.
-
----
-
-## Flow D: Mid-Project Integration
-
-1. Run Flow B (existing project scan).
-2. After confirming PROJECT_CONFIG.md, tell the developer:
-   ```
-   ✅ Framework configured for your existing project.
-
-   Recommended next steps:
-   • /explore "how is auth currently handled?" — understand what's there before changing anything
-   • /analyze-bugs — generate TEST_SPEC.md so we know what to protect
-   • /refactor <module> — optional: clean one module at a time (tests must pass before and after)
-   • /plan <new-feature> — add new features using framework standards
-   • /fix <bug-description> — fix bugs with proper research and testing
-   • /git-branch — set up / verify your Git branching strategy
-   • /env — manage dev and prod environment files
-
-   You do NOT need to refactor everything at once. Start with one module or one new feature.
-   ```
-
----
-
-## What's next (always shown after /init completes)
-
-```
-✅ Done: Project initialized. PROJECT_CONFIG.md written. Environment files created.
-
-👉 What to do next depends on your goal:
-
-  Adding a new feature?
-    → /api-design "<feature>"   (if you have a custom backend)
-    → /plan "<feature>"         (if backend is Supabase/Firebase — skips API design)
-
-  Migrating from another platform?
-    → /analyze-source <path>
-
-  Fixing a bug?
-    → /fix "<describe the bug>"
-
-  Exploring existing code?
-    → /explore "<question about the codebase>"
-
-  Setting up Git branching?
-    → /git-branch
-
-  Managing dev/prod environments?
-    → /env
-
-💡 Example:
-   /plan "user login with email and password"
-   /fix "login button stays disabled after correct credentials"
-   /analyze-source ./old-react-native-app
-   /git-branch
-```
+5. Ask user to confirm detected values
+6. Write PROJECT_CONFIG.md with detected + confirmed values
+7. Record findings in MEMORY.md Detected Architecture section
+8. Run /analyze-bugs if BUG_PATTERNS.md exists
