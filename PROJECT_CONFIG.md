@@ -6,6 +6,7 @@ name: __PROJECT_NAME__
 description: __DESCRIPTION__
 platforms: [ios, android]
 type: new       # new | existing
+prdFile:        # path to PRD if one was used during /init, e.g. PRD_TEMPLATE.md
 figmaAvailable: false    # true | false — set true if Figma MCP or screenshot is provided
 
 ## Environments
@@ -83,3 +84,7 @@ analyticsProvider: firebase   # firebase | amplitude | mixpanel | custom
 
 ## Feature Flags
 featureFlagProvider: firebase_rc  # firebase_rc | launchdarkly | custom
+
+## Project Management
+jira: false                   # true | false
+jiraProjectKey:               # Jira project key, e.g. APP, MOB, TASK
