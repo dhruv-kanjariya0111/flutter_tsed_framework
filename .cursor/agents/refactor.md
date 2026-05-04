@@ -16,3 +16,11 @@ Behavior-neutral code cleanup. Tests must pass before AND after.
 - Add missing Semantics to interactive widgets
 - Improve error handling completeness
 - Add missing const constructors
+
+## What's next (always output at end)
+```
+✅ Done: <module> refactored. Tests pass before and after.
+
+👉 Next step: → /verify
+💡 Example: /verify
+```

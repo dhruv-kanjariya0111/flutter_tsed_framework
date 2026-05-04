@@ -1,12 +1,20 @@
 # /analyze-source <path> — Migration Source Analysis
 
+## Note
+`/analyze-source` is an alias for `/migrate` Phase 0. Running this command is identical to running `/migrate <path>` before any screen has been migrated.
+
+Use it when you want to generate `MIGRATION_MAP.md` without immediately starting a screen migration.
+
 ## Flow
-1. Scan source project at <path>
-2. Detect: framework (React/RN/Android/iOS), state management, navigation
-3. Catalog: all screens, components, API calls, native features
-4. Generate MIGRATION_MAP.md:
-   - Source file → Flutter equivalent mapping
-   - Complexity per screen (S/M/L/XL)
-   - Native features requiring Flutter plugins
-   - Estimated wave timeline
-5. Present MIGRATION_MAP.md for review
+Delegates to the `/migrate` Phase 0 flow. See `.cursor/commands/migrate.md` for full details.
+
+## What's next
+```
+✅ Done: MIGRATION_MAP.md generated and reviewed.
+
+👉 Next step: → /migrate "<screen-name>"   (start migrating the first screen)
+
+💡 Example:
+   /migrate "home screen"
+   /migrate "login screen"
+```

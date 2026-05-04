@@ -19,3 +19,13 @@ PASS / FAIL
 Missing Semantics: [list]
 Touch target violations: [list]
 Contrast issues: [list]
+
+## What's next
+```
+✅ Done: Accessibility audit complete.
+
+👉 PASS → continue to /perf-check or /release
+   FAIL → fix each listed issue, then re-run /a11y-check
+
+💡 Fix example: Add Semantics(identifier: 'login_button', label: 'Log in') to ElevatedButton.
+```

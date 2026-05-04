@@ -6,6 +6,23 @@ name: __PROJECT_NAME__
 description: __DESCRIPTION__
 platforms: [ios, android]
 type: new       # new | existing
+figmaAvailable: false    # true | false — set true if Figma MCP or screenshot is provided
+
+## Environments
+environments: [dev, prod]          # active environment tiers
+defaultEnv: dev                    # dev | prod
+devEnvFile: frontend/.env.dev      # Flutter --dart-define-from-file target (dev)
+prodEnvFile: frontend/.env.prod    # Flutter --dart-define-from-file target (prod)
+
+## Git Branching
+gitBranchingStrategy: gitflow     # gitflow | trunk | custom
+mainBranch: main                  # production branch
+developBranch: develop            # integration branch
+featureBranchPrefix: feat/        # e.g. feat/login
+bugfixBranchPrefix: fix/          # e.g. fix/cart-total
+releaseBranchPrefix: release/     # e.g. release/1.2.0
+hotfixBranchPrefix: hotfix/       # e.g. hotfix/crash-on-launch
+requirePRForMain: true            # never push directly to main
 
 ## Frontend
 architecture: feature_first_clean
@@ -19,12 +36,13 @@ hasDesignSystem: true
 frontendPath: frontend/
 
 ## Backend
-backendFramework: tsed
+backendFramework: tsed   # tsed | node | none
 backendPath: ../client-api/
 database: postgres
 orm: prisma
 backendPort: 3000
 apiContractFile: shared/openapi.yaml
+backendAccess: true      # true | false — set false if you cannot run backend locally
 
 ## Auth
 authStrategy: jwt             # jwt | firebase_auth | supabase_auth | hybrid

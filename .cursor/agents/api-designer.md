@@ -26,3 +26,12 @@ Designs OpenAPI 3.0 contracts BEFORE any implementation.
 - Touch frontend/ or backend/src/ directly
 - Implement before human approval
 - Leave schema without validation constraints
+
+## What's next (always output at end)
+```
+✅ Done: openapi.yaml updated. Endpoints validated with spectral.
+⏸️  WAITING: Review the endpoint schemas above and approve before any code is written.
+
+👉 After approval: → /plan "<feature>"
+💡 Example: /plan "user profile update"
+```

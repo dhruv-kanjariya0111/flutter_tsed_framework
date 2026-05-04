@@ -28,3 +28,19 @@ feat: → minor bump
 fix:, perf:, refactor: → patch bump
 feat! or BREAKING CHANGE footer → major bump
 docs:, style:, test:, chore: → no version bump
+
+## Git Branching Check
+Before releasing:
+1. Confirm current branch is `main` (or configured mainBranch)
+2. Confirm all feature branches merged to develop, develop merged to main
+3. If releasing from a release branch: merge to main AND develop
+
+## What's next (always output at end)
+```
+✅ Done: v<X.Y.Z> released. CHANGELOG.md updated. Git tag pushed. CI triggered.
+
+👉 Monitor CI pipeline. Next feature?
+     git checkout develop
+     git checkout -b feat/<next-feature>
+     /plan "<next-feature>"
+```

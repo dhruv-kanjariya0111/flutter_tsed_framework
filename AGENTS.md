@@ -54,3 +54,36 @@
 **File**: `.cursor/agents/release-agent.md`
 **Trigger**: `/release`
 **Role**: Bumps semver, generates CHANGELOG.md from Conventional Commits, tags git, triggers Codemagic production workflow.
+
+## Node Backend Coder
+**File**: `.cursor/agents/node-backend-coder.md`
+**Trigger**: `/tdd-backend` when `backendFramework: node` in PROJECT_CONFIG.md
+**Role**: Implements plain Node.js (Express/Fastify) backend modules. Uses zod/joi validation, middleware pattern, no decorators. Environment-aware via `process.env`.
+
+---
+
+## Command Reference (all commands)
+| Command | Purpose |
+|---|---|
+| `/init` | Project setup wizard (new / existing / migrating / mid-project) |
+| `/plan <feature>` | Wave-ordered feature plan with web research |
+| `/api-design <feature>` | OpenAPI contract design (tsed/node only) |
+| `/tdd <feature>` | Full Flutter TDD cycle |
+| `/tdd-backend <feature>` | Full backend TDD cycle (branched by backendFramework) |
+| `/fix <description>` | Research + fix a bug with failing test first |
+| `/integrate <service>` | Add a 3rd-party service with manual step guidance |
+| `/migrate <target>` | Platform migration (absorbs analyze-source as Phase 0) |
+| `/analyze-source <path>` | Migration source analysis alias |
+| `/refactor <module>` | Behavior-neutral cleanup |
+| `/verify` | All quality gates (flags: --flutter-only, --backend-only, --pre-release) |
+| `/review <feature>` | 8-dimension code review |
+| `/sync-contract` | Flutter models ↔ openapi.yaml alignment |
+| `/analyze-bugs` | Regenerate TEST_SPEC.md from BUG_PATTERNS with test-type tags |
+| `/explore <question>` | Read-only codebase Q&A |
+| `/a11y-check` | WCAG AA accessibility audit |
+| `/perf-check` | Performance budget check |
+| `/offline-check` | Offline-first audit (when offlineFirst: true) |
+| `/store-check` | App Store + Play Store compliance |
+| `/release <type>` | Semantic versioning + CHANGELOG + CI trigger |
+| `/git-branch` | GitHub branching strategy manager (Gitflow) |
+| `/env` | Dev/prod environment file manager |
