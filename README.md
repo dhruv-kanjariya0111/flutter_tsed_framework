@@ -391,9 +391,10 @@ The AI will:
 
 ## Troubleshooting
 
-**Setup command not found:**
-- Ensure the package is installed globally: `npm list -g @boscdev/flutter-tsed-framework`
-- Verify npm global bin is in PATH: `echo $PATH | grep $(npm config get prefix)`
+**Setup command not available:**
+- Verify `npm` is available: `which npm`
+- Ensure global install succeeded: `flutter-tsed --version`
+- Re-run the setup command: `flutter-tsed setup-claude` or `flutter-tsed setup-cursor`
 
 **Command fails with configuration error:**
 - The AI will show a `⚠️ CONFIGURATION REQUIRED` block with exact steps

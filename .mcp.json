@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "figma": {
-      "command": "npx",
-      "args": ["-y", "figma-flutter-mcp", "--figma-api-key=${FIGMA_API_KEY}", "--stdio"],
-      "description": "Figma design tokens and component specs → Flutter widgets"
-    }
-  }
-}

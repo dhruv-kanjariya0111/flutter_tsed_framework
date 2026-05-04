@@ -5,14 +5,20 @@ const path = require("path");
 const command = process.argv[2];
 
 const commandHandlers = {
+  "setup-claude": () => require(path.join(__dirname, "../src/setup-claude"))(),
+  "setup-cursor": () => require(path.join(__dirname, "../src/setup-cursor"))(),
   "sync-rules": () => require(path.join(__dirname, "../src/sync-rules"))(),
-  "sync-commands": () => require(path.join(__dirname, "../src/sync-commands"))(),
   init: () => require(path.join(__dirname, "../src/init"))(),
-  "--mcp": () => require(path.join(__dirname, "../src/mcp-server"))(),
 };
 
 if (!command || command === "-h" || command === "--help") {
-  console.log("Usage: flutter-tsed <sync-rules|sync-commands|init|--mcp>");
+  console.log("Usage: flutter-tsed <setup-claude|setup-cursor|sync-rules|init>");
+  console.log("");
+  console.log("Commands:");
+  console.log("  setup-claude [--global|--local] [--force]  Install for Claude Code");
+  console.log("  setup-cursor [--global|--local] [--force]  Install for Cursor");
+  console.log("  sync-rules                                 Sync framework rules");
+  console.log("  init                                       Initialize project");
   process.exit(0);
 }
 
