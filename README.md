@@ -33,10 +33,7 @@ A production-grade Flutter development framework with guided AI-powered workflow
 ```
 Restart Cursor after adding.
 
-**Option B: VS Code**
-Install `boscdev.flutter-tsed-framework` from the VS Code Marketplace.
-
-**Option C: npm (repo-local)**
+**Option B: npm (repo-local)**
 ```bash
 npm install --save-dev @boscdev/flutter-tsed-framework
 ```
@@ -383,10 +380,6 @@ The AI will:
 ---
 
 ## Troubleshooting
-
-**Command not showing in VS Code:**
-- Confirm extension installed and enabled
-- Reload window: `Cmd+Shift+P` → `Developer: Reload Window`
 
 **MCP server not available:**
 - Validate `.cursor/mcp.json` JSON syntax
